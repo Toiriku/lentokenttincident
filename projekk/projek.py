@@ -10,6 +10,7 @@ yhteys = mysql.connector.connect(
          password='ro0t',
          autocommit=True
 )
+
 kursori = yhteys.cursor()
 
 npcTypes = ["friendly", "robber", "player"]
@@ -96,7 +97,7 @@ def chooseNpc():
         #dialogue metodi
 
     elif npc == Player:
-        Olio =Player
+        Olio = Player
         print("U've met local card player, down to play?")
         #metodi card game
     return npc
