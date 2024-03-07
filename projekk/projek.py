@@ -1,5 +1,7 @@
 import random
 
+import time
+
 import mysql.connector
 
 yhteys = mysql.connector.connect(
@@ -24,6 +26,8 @@ kursori.fetchall()
 
 print("Time to play the game")
 print("Press Enter to continue..")
+
+player_name = input("Enter your name: ")
 
 user_input = input()
 if user_input == "":
@@ -112,3 +116,56 @@ def arrival():
     return
 
 arrival()
+
+#boss fight
+def play_russian_roulette():
+    print('"Welcome to Bausses lair!"')
+    print("\"I like to play with high stakes..so let's play some Russian Roulette HAHA!\"")
+    print("You start by pulling the trigger.")
+
+    chambers = 6
+    bullet_chamber = random.randint(1, chambers)
+
+    while True:
+        input("Your turn, press enter to pull the trigger! ")
+
+        if chambers == bullet_chamber:
+            print("BANG! You lose!")
+            print("Game over")
+            time.sleep(1)
+            break
+        else:
+            print("Click! You live that one.")
+            chambers -= 1
+
+        if chambers == 1:
+            print("Click! You survived! You know the boss will have to admit defeat now.")
+            time.sleep(1)
+            print("Well after all this, I am an honorable man.")
+            time.sleep(1)
+            print("BANG! TheBaus pulls the trigger on himself")
+            time.sleep(1)
+            print("You win! Congratulations!")
+            time.sleep(1)
+            print("Well played! Game over.")
+            time.sleep(1)
+            break
+
+        print("Bausses turn")
+        time.sleep(1)
+        print('"You ready for your demice?"')
+        time.sleep(1)
+
+
+        if chambers == bullet_chamber:
+            print("BANG! TheBaus loses!")
+            time.sleep(1)
+            break
+        else:
+            print("*The boss pulls the trigger")
+            time.sleep(1)
+            print("Click! The boss lives that one.")
+            chambers -= 1
+
+if __name__ == "__main__":
+    play_russian_roulette()
