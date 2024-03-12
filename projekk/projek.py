@@ -1,3 +1,4 @@
+import os
 import random
 
 import time
@@ -376,147 +377,151 @@ def play_game(bum_count):
     # laitetaan tähän mustajaakko
     bum_count -= 1
     return bum_count
-    deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
-    bet = 1
+deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
+bet = 1
 
-    def jako(deck):
-        kasi = []
-        for i in range(2):
-            random.shuffle(deck)
-            kortti = random.choice(deck)
-            if kortti == 11: kortti = "J"
-            if kortti == 12: kortti = "Q"
-            if kortti == 13: kortti = "K"
-            if kortti == 14: kortti = "A"
-            kasi.append(kortti)
-        return kasi
-
-    def total(kasi):
-        total = 0
-        for kortti in kasi:
-            if kortti == "J" or kortti == "Q" or kortti == "K":
-                total += 10
-            elif kortti == "A":
-                if total >= 11:
-                    total += 1
-                else:
-                    total += 11
-            else:
-                total += int(kortti)  # Convert the card string to an integer
-        return total
-
-    def play_again():
-        again = input("Do you want to play again Y/N?").lower()
-        if again == "y":
-            dealer_kasi = []
-            player_kasi = []
-            deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
-            game()
-        else:
-            print("Thanks for playing!")
-            exit()
-
-    def hit():
-        kortti = deck.pop()
-        if kortti == 11:
-            kortti = "J"
-        if kortti == 12:
-            kortti = "Q"
-        if kortti == 13:
-            kortti = "K"
-        if kortti == 14:
-            kortti = "A"
+def jako(deck):
+    kasi = []
+    for i in range(2):
+        random.shuffle(deck)
+        kortti = random.choice(deck)
+        if kortti == 11: kortti = "J"
+        if kortti == 12: kortti = "Q"
+        if kortti == 13: kortti = "K"
+        if kortti == 14: kortti = "A"
         kasi.append(kortti)
-        return kasi
+    return kasi
 
-    def print_result(dealer_kasi, player_kasi):
-        clear()
-
-        print("Time to play blackjack")
-        print("Dealer has a " + str(dealer_kasi) + "for a total of " + str(total(dealer_kasi)))
-        print("Player has a" + str(player_kasi) + "for a total of " + str(total(player_kasi)))
-
-    def blackjack(dealer_kasi, player_kasi):
-        if total(player_kasi) == 21:
-            print_result(player_kasi, dealer_kasi)
-            print("You got a blackjack!")
-        elif total(dealer_kasi) == 21:
-            print_result(dealer_kasi, player_kasi)
-            print("The dealer has a blackjack")
-            raha -= bet
-
-    def score(dealer_kasi, player_kasi):
-        if total(player_kasi) == 21:
-            print_result(dealer_kasi, player_kasi)
-            print("You got a blackjack!")
-        elif total(dealer_kasi) == 21:
-            print_result(dealer_kasi, player_kasi)
-            print("The dealer has a blackjack")
-        elif total(player_kasi) > 21:
-            print_result(dealer_kasi, player_kasi)
-            print("You bust")
-        elif total(dealer_kasi) > 21:
-            print_result(dealer_kasi, player_kasi)
-            print("The dealer busts")
-            raha += bet * 1.5
-        elif total(player_kasi) < total(dealer_kasi):
-            print_result(dealer_kasi, player_kasi)
-            print("The dealer has a higher score")
-            raha -= bet
-        elif total(player_kasi) > total(dealer_kasi):
-            print_result(dealer_kasi, player_kasi)
-            print("You have a higher score")
-            raha += bet * 1.5
-        elif total(player_kasi) == total(dealer_kasi):
-            print_result(dealer_kasi, player_kasi)
-            print("It's a tie")
-            raha -= bet
-
-    def make_bet():
-        global bet
-        bet = 0
-        print("How much would you like to bet")
-        while bet == 0:
-            bet_comp = input()
-            bet_comp = int(bet_comp)
-
-            if bet_comp >= 1 and bet_comp <= raha:
-                bet = bet_comp
+def total(kasi):
+    total = 0
+    for kortti in kasi:
+        if kortti == "J" or kortti == "Q" or kortti == "K":
+            total += 10
+        elif kortti == "A":
+            if total >= 11:
+                total += 1
             else:
-                print("You only have " + str(raha))
+                total += 11
+        else:
+            total += int(kortti)  # Convert the card string to an integer
+    return total
 
-    def game():
-        choice = 0
-        print("Time to game")
-        dealer_kasi = jako(deck)
-        player_kasi = jako(deck)
-        print("dealer has " + str(dealer_kasi[0]))
-        make_bet()
-        print("You have a " + str(player_kasi[0]))
-        blackjack(dealer_kasi, player_kasi)
-        quit = False
-        while not quit:
-            choice = input("Do you want to [H]it, [S]tand or [Q]uit").lower()
-            if choice == 'h':
-                hit(player_kasi)
-                if total(player_kasi) > 21:
-                    print("You bust")
-                    raha -= bet
-                    play_again()
-                elif choice == 's':
-                    while total(dealer_kasi) < 17:
-                        hit(dealer_kasi)
-                        print(dealer_kasi)
-                        if total(dealer_kasi) > 21:
-                            print("Dealer busts")
-                            raha += bet * 1.5
-                            play_again()
-                        score(dealer_kasi, player_kasi)
+def play_again():
+    again = input("Do you want to play again Y/N?").lower()
+    if again == "y":
+        dealer_kasi = []
+        player_kasi = []
+        deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
+        game()
+    else:
+        print("Thanks for playing!")
+        exit()
+
+def hit():
+    kortti = deck.pop()
+    if kortti == 11:
+        kortti = "J"
+    if kortti == 12:
+        kortti = "Q"
+    if kortti == 13:
+        kortti = "K"
+    if kortti == 14:
+        kortti = "A"
+    kasi.append(kortti)
+    return kasi
+def clear():
+    if os.name == 'nt':
+        os.system('cls')
+    if os.name == 'posix':
+        os.system('clear')
+def print_result(dealer_kasi, player_kasi):
+    clear()
+
+    print("Time to play blackjack")
+    print("Dealer has a " + str(dealer_kasi) + "for a total of " + str(total(dealer_kasi)))
+    print("Player has a" + str(player_kasi) + "for a total of " + str(total(player_kasi)))
+
+def blackjack(dealer_kasi, player_kasi):
+    if total(player_kasi) == 21:
+        print_result(player_kasi, dealer_kasi)
+        print("You got a blackjack!")
+    elif total(dealer_kasi) == 21:
+        print_result(dealer_kasi, player_kasi)
+        print("The dealer has a blackjack")
+        raha -= bet
+
+def score(dealer_kasi, player_kasi):
+    if total(player_kasi) == 21:
+        print_result(dealer_kasi, player_kasi)
+        print("You got a blackjack!")
+    elif total(dealer_kasi) == 21:
+        print_result(dealer_kasi, player_kasi)
+        print("The dealer has a blackjack")
+    elif total(player_kasi) > 21:
+        print_result(dealer_kasi, player_kasi)
+        print("You bust")
+    elif total(dealer_kasi) > 21:
+        print_result(dealer_kasi, player_kasi)
+        print("The dealer busts")
+        raha += bet * 1.5
+    elif total(player_kasi) < total(dealer_kasi):
+        print_result(dealer_kasi, player_kasi)
+        print("The dealer has a higher score")
+        raha -= bet
+    elif total(player_kasi) > total(dealer_kasi):
+        print_result(dealer_kasi, player_kasi)
+        print("You have a higher score")
+        raha += bet * 1.5
+    elif total(player_kasi) == total(dealer_kasi):
+        print_result(dealer_kasi, player_kasi)
+        print("It's a tie")
+        raha -= bet
+
+def make_bet():
+    global bet
+    bet = 0
+    print("How much would you like to bet")
+    while bet == 0:
+        bet_comp = input()
+        bet_comp = int(bet_comp)
+
+        if bet_comp >= 1 and bet_comp <= raha:
+            bet = bet_comp
+        else:
+            print("You only have " + str(raha))
+
+def game():
+    choice = 0
+    print("Time to game")
+    dealer_kasi = jako(deck)
+    player_kasi = jako(deck)
+    print("dealer has " + str(dealer_kasi[0]))
+    make_bet()
+    print("You have a " + str(player_kasi[0]))
+    blackjack(dealer_kasi, player_kasi)
+    quit = False
+    while not quit:
+        choice = input("Do you want to [H]it, [S]tand or [Q]uit").lower()
+        if choice == 'h':
+            hit(player_kasi)
+            if total(player_kasi) > 21:
+                print("You bust")
+                raha -= bet
+                play_again()
+            elif choice == 's':
+                while total(dealer_kasi) < 17:
+                    hit(dealer_kasi)
+                    print(dealer_kasi)
+                    if total(dealer_kasi) > 21:
+                        print("Dealer busts")
+                        raha += bet * 1.5
                         play_again()
-                elif choice == 'q':
-                    print("Thanks for the game")
-                    quit = True
-                    exit()
+                    score(dealer_kasi, player_kasi)
+                    play_again()
+            elif choice == 'q':
+                print("Thanks for the game")
+                quit = True
+                exit()
 
 
 def purchase_knife(bum_count):
