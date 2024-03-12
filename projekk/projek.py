@@ -417,7 +417,7 @@ def play_again():
         print("Thanks for playing!")
         exit()
 
-def hit():
+def hit(kasi):
     kortti = deck.pop()
     if kortti == 11:
         kortti = "J"
