@@ -405,7 +405,8 @@ def game():
                 dealer_kasi.append(nosto())
                 print("Dealer hits: ", dealer_kasi)
             score(dealer_kasi, player_kasi)
-    bum_encounter()
+            break
+    kaikki_funktiot()
 
 def score(dealer_kasi, player_kasi):
     global raha
