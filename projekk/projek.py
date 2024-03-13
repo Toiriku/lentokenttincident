@@ -236,16 +236,16 @@ def codeCreation():
     code = ''.join(random.choices(characters, k=6))
     return code
 
-code_dialogues1 = ["Now we are getting somewhere",
-                   "I am one step closer to that devil..",
-                   "That's what I was looking for..",
-                   "That is the one I needed..",
-                   "I've been looking for that one for a while now.."]
+code_dialogues1 = ["You got piece of code you needed",
+                   "You are one step closer to that devil..",
+                   "That is exactly what you needed",
+                   "That clue will help u get to the boss..",
+                   ]
 
-code_dialogues2 = ["I already have that one, damn it ..",
-                   "Not the one I needed.."
-                   "He sold me some crap, stupid bum.."
-                   "Can't believe that I got scammed by some bum.. damn it"]
+code_dialogues2 = ["U already have that one, damn it ..",
+                   "Not the one u needed.."
+                   "Bum sold u some crap, u got scammed"
+                   "That piece of paper has nothing to do with the boss, better luck next time!"]
 
 
 
