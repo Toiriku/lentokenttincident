@@ -57,16 +57,8 @@ airport_comment = [
 
 print_airport_comment = random.choice(airport_comment)
 
-def random_airport():
-    airports = [
-        "Helsinkivantaa", "Rio de Janeiro"
-    ]
-    return random.choice(airports)
-
 def bum_encounter(bum_count):
-    global raha
-    global dirk
-    global life
+    global raha, dirk, life
 
     time.sleep(3)
     dialog_bum_encounter1 = [
@@ -187,9 +179,7 @@ def bum_encounter(bum_count):
 
 
 def purchase_knife(bum_count):
-    global raha
-    global dirk
-    global bum
+    global raha, dirk, bum
 
     knife_buy = input(f"{bum}: So you wish to purchase a knife huh? \nInput yes / no\n")
     if knife_buy == 'yes':
