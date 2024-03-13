@@ -359,10 +359,14 @@ def total(kasi):
     for kortti in kasi:
         if isinstance(kortti, int):
             total_value += kortti
-            if kortti == "A":
+            if kortti == 11:
                 num_aces += 1
-        else:
+        elif kortti == "J" or kortti == "Q" or kortti == "K":
             total_value += 10
+        elif kortti == "A":
+            num_aces += 1
+            total_value += 11
+
     while total_value > 21 and num_aces > 0:
         total_value -= 10
         num_aces -= 1
