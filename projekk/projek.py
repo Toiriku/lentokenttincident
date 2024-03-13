@@ -181,7 +181,9 @@ def bum_encounter(bum_count):
 
 
 def purchase_knife(bum_count):
-    global raha, dirk, bum
+    global raha
+    global dirk
+    global bum
 
     knife_buy = input(f"{bum}: So you wish to purchase a knife huh? \nInput yes / no\n")
     if knife_buy == 'yes':
