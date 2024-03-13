@@ -20,7 +20,7 @@ kursori = yhteys.cursor()
 raha = 1000
 dirk = 0
 life = 0
-bum_count = 3
+bum_count = 0
 bums = ["bum"]
 bum = random.choice(bums)
 
@@ -168,11 +168,11 @@ def bum_encounter():
                    "\n4. " + print_action4 + "\n")
 
     if action == "1":
-        play_game(bum_count)
+        play_game()
     elif action == "2":
-        purchase_knife(bum_count)
+        purchase_knife()
     elif action == "3":
-        request_information(bum_count)
+        request_information()
     elif action == "4":
         print("You continued on your way. ")
         bum_count -= 1
@@ -181,6 +181,7 @@ def bum_encounter():
         print("Invalid input, encounter will now end. Better luck next time.")
     bum_count -= 1
     return bum_count
+
 
 
 def purchase_knife():
@@ -336,148 +337,111 @@ def play_game():
 deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
 bet = 1
 
-def jako(deck):
-    kasi = []
-    for i in range(2):
-        random.shuffle(deck)
-        kortti = random.choice(deck)
-        if kortti == 11: kortti = "J"
-        if kortti == 12: kortti = "Q"
-        if kortti == 13: kortti = "K"
-        if kortti == 14: kortti = "A"
-        kasi.append(kortti)
-    return kasi
+def shuffle():
+    random.shuffle(deck)
 
-def total(kasi):
-    total = 0
-    for kortti in kasi:
-        if kortti == "J" or kortti == "Q" or kortti == "K":
-            total += 10
-        elif kortti == "A":
-            if total >= 11:
-                total += 1
-            else:
-                total += 11
-        else:
-            total += int(kortti)  # Convert the card string to an integer
-    return total
-
-def play_again():
-    again = input("Do you want to play again Y/N?").lower()
-    if again == "y":
-        dealer_kasi = []
-        player_kasi = []
-        deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
-        game()
-    else:
-        print("Thanks for playing!")
-        exit()
-
-def hit(kasi):
-    kortti = deck.pop()
+def nosto():
+    kortti = deck.pop(0)
     if kortti == 11:
         kortti = "J"
-    if kortti == 12:
+    elif kortti == 12:
         kortti = "Q"
-    if kortti == 13:
+    elif kortti == 13:
         kortti = "K"
-    if kortti == 14:
+    elif kortti == 14:
         kortti = "A"
-    kasi.append(kortti)
-    return kasi
-def clear():
-    if os.name == 'nt':
-        os.system('cls')
-    if os.name == 'posix':
-        os.system('clear')
-def print_result(dealer_kasi, player_kasi):
-    clear()
+    return kortti
 
-    print("Time to play blackjack")
-    print("Dealer has a " + str(dealer_kasi) + "for a total of " + str(total(dealer_kasi)))
-    print("Player has a" + str(player_kasi) + "for a total of " + str(total(player_kasi)))
 
-def blackjack(dealer_kasi, player_kasi):
-    if total(player_kasi) == 21:
-        print_result(player_kasi, dealer_kasi)
-        print("You got a blackjack!")
-    elif total(dealer_kasi) == 21:
-        print_result(dealer_kasi, player_kasi)
-        print("The dealer has a blackjack")
-        raha -= bet
-
-def score(dealer_kasi, player_kasi):
-    if total(player_kasi) == 21:
-        print_result(dealer_kasi, player_kasi)
-        print("You got a blackjack!")
-    elif total(dealer_kasi) == 21:
-        print_result(dealer_kasi, player_kasi)
-        print("The dealer has a blackjack")
-    elif total(player_kasi) > 21:
-        print_result(dealer_kasi, player_kasi)
-        print("You bust")
-    elif total(dealer_kasi) > 21:
-        print_result(dealer_kasi, player_kasi)
-        print("The dealer busts")
-        raha += bet * 1.5
-    elif total(player_kasi) < total(dealer_kasi):
-        print_result(dealer_kasi, player_kasi)
-        print("The dealer has a higher score")
-        raha -= bet
-    elif total(player_kasi) > total(dealer_kasi):
-        print_result(dealer_kasi, player_kasi)
-        print("You have a higher score")
-        raha += bet * 1.5
-    elif total(player_kasi) == total(dealer_kasi):
-        print_result(dealer_kasi, player_kasi)
-        print("It's a tie")
-        raha -= bet
-
-def make_bet():
-    global bet
-    bet = 0
-    print("How much would you like to bet")
-    while bet == 0:
-        bet_comp = input()
-        bet_comp = int(bet_comp)
-
-        if bet_comp >= 1 and bet_comp <= raha:
-            bet = bet_comp
+def total(kasi):
+    total_value = 0
+    num_aces = 0
+    for kortti in kasi:
+        if isinstance(kortti, int):
+            total_value += kortti
+            if kortti == "A":
+                num_aces += 1
         else:
-            print("You only have " + str(raha))
+            total_value += 10
+    while total_value > 21 and num_aces > 0:
+        total_value -= 10
+        num_aces -= 1
+    return total_value
+
+
+def print_result(dealer_kasi, player_kasi):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("dealer has: ", dealer_kasi, " (total", total(dealer_kasi), ")")
+    print("player has: ", player_kasi, " (total", total(player_kasi), ")")
+
 
 def game():
-    choice = 0
-    print("Time to game")
-    dealer_kasi = jako(deck)
-    player_kasi = jako(deck)
-    print("dealer has " + str(dealer_kasi[0]))
+    global raha, bet, dealer_kasi, player_kasi
+    shuffle()
+    dealer_kasi = []
+    player_kasi = []
+    print("Its time to play Blackjack")
     make_bet()
-    print("You have a " + str(player_kasi[0]))
-    blackjack(dealer_kasi, player_kasi)
-    quit = False
-    while not quit:
-        choice = input("Do you want to [H]it, [S]tand or [Q]uit").lower()
+    dealer_kasi.append(nosto())
+    player_kasi.append(nosto())
+    player_kasi.append(nosto())
+    print_result(dealer_kasi, player_kasi)
+
+    while True:
+        choice = input("Would you like to [H]it or [S]tand").lower()
         if choice == 'h':
-            hit(player_kasi)
+            player_kasi.append(nosto())
+            print_result(dealer_kasi, player_kasi)
             if total(player_kasi) > 21:
                 print("You bust")
-                raha -= bet
-                play_again()
+                print(f"You only have {raha} amount of money lol")
+                break
         elif choice == 's':
-                while total(dealer_kasi) < 17:
-                    hit(dealer_kasi)
-                    print(dealer_kasi)
-                    if total(dealer_kasi) > 21:
-                        print("Dealer busts")
-                        raha += bet * 1.5
-                        play_again()
-                    score(dealer_kasi, player_kasi)
-                    play_again()
-        elif choice == 'q':
-                print("Thanks for the game")
-                quit = True
-                exit()
+            while total(dealer_kasi) < 17:
+                dealer_kasi.append(nosto())
+                print("Dealer hits: ", dealer_kasi)
+            score(dealer_kasi, player_kasi)
+    bum_encounter()
+
+def score(dealer_kasi, player_kasi):
+    global raha
+    dealer_total = total(dealer_kasi)
+    player_total = total(player_kasi)
+    if player_total == 21:
+        raha += bet * 2.5
+        print(f"Your total is: {raha}")
+    if player_total > 21:
+        print("You bust! Dealer wins.")
+    elif dealer_total > 21:
+        print("Dealer busts! You win.")
+        raha += bet * 2.5
+    elif player_total > dealer_total:
+        print("You win!")
+        raha += bet * 2.5
+    elif player_total < dealer_total:
+        print("Dealer wins.")
+    else:
+        print("It's a tie.")
+        raha += bet
+    print("Your remaining money:", raha)
+    bum_encounter()
+
+
+def make_bet():
+    global bet, raha
+    print("You have", raha)
+    while True:
+        bet_amount = input("How much would you like to bet? ")
+        if bet_amount.isdigit():
+            bet_amount = int(bet_amount)
+            if bet_amount <= raha:
+                bet = bet_amount
+                raha -= bet
+                break
+            else:
+                print("You don't have enough money!")
+        else:
+            print("Please enter a valid bet amount.")
 
 
 def beginning():
@@ -510,13 +474,18 @@ def travel():
         print("Invalid input ")
         valinta = int(input("Choose 1, 2, or 3 and press Enter to continue.."))
     else:
-        kursori.execute(f"UPDATE game SET location = '{options[valinta - 1][0]}'")
+        selected_location = options[valinta - 1][0]
+        kursori.execute("UPDATE game SET location = %s", (selected_location,))
         kursori.execute("SELECT location FROM game")
         sijainti = kursori.fetchone()
         print(f"U are at {sijainti[0]}")
+
+    kursori.fetchall()
+
     while bum_count > 0:
         bum_encounter()
     return
+
 
 #boss fight
 def play_russian_roulette():
@@ -592,5 +561,10 @@ def accept_boss_challenge():
             print("What a coward..")
             travel()
 
+def kaikki_funktiot():
+    travel()
+    bum_encounter()
+
 beginning()
-travel()
+while life == 0:
+    kaikki_funktiot()
