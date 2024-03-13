@@ -1,7 +1,7 @@
 import random
 
 import time
-
+import string
 import mysql.connector
 
 yhteys = mysql.connector.connect(
@@ -15,24 +15,11 @@ yhteys = mysql.connector.connect(
 
 kursori = yhteys.cursor()
 
+travel_dialogue = ["Where will u go next ?",
+                    "Where are u planning to go now?",
+                    "Where are u planning to go next?",
+                    "Where shall u go now ?"]
 
-#def lentokenttaSiirto():
-   # valinta = [tulos - 1]
-   # kursori.execute("INSERT INTO game (location) VALUES (%s), (%s);", (valinta))
-   # print(f"U start at the airport {valinta}")
-   # print("Have fun)")
-   # return valinta
-
-#startingPoint()
-
-#def arrival():
-   # print("Which one do u want to talk to?")
-   # valinta = input("Type in number (1-3) and press Enter to continue..")
-
-   # if valinta == "1" or valinta == "2" or valinta == "3":
-  #  return
-
-#arrival()
 
 
 raha = 1000
@@ -182,6 +169,7 @@ def bum_encounter(bum_count):
         "Keep walking. "
     ]
     print_action4 = random.choice(dialog_action4)
+
     action = input("\n1. " + print_action1 +
                    "\n2. " + print_action2 +
                    "\n3. " + print_action3 +
@@ -241,6 +229,33 @@ def purchase_knife(bum_count):
         bum_count -= 1
         return bum_count
 
+
+
+
+
+def codeCreation():
+    global code_collected
+    global code
+    code_collected = []
+    characters = string.ascii_letters + string.digits
+    code = ''.join(random.choices(characters, k=6))
+    return code
+
+code_dialogues1 = ["Now we are getting somewhere",
+                   "I am one step closer to that devil..",
+                   "That's what I was looking for..",
+                   "That is the one I needed..",
+                   "I've been looking for that one for a while now.."]
+
+code_dialogues2 = ["I already have that one, damn it ..",
+                   "Not the one I needed.."
+                   "He sold me some crap, stupid bum.."
+                   "Can't believe that I got scammed by some bum.. damn it"]
+
+
+
+
+codeCreation()
 
 def request_information(bum_count):
     global raha
@@ -302,11 +317,23 @@ def request_information(bum_count):
         print(f"{bum} walks away. ")
         bum_count -= 1
         return bum_count
+
     else:
-        info_buy = input(f"{bum}: I can sell you a clue for 100. \nInput yes / no\n")
+        info_buy = input(f"{bum}: I can sell you a clue for 500. \nInput yes / no\n")
         if info_buy == 'yes':
-            raha -= 100
-            print("clue")
+            raha -= 500
+            clue = random.choice(code)
+            print("Bum pulls out piece of paper with something written on it ")
+            print("He quickly hands you the paper and disappears while you are carefully unfolding it ")
+            print(f"'{clue}' is written on the paper")
+            if clue not in code_collected:
+                print(random.choice(code_dialogues1))
+                code_collected.append(clue)
+            elif code_collected == code:
+                print("Seems like you finally have everything u needed to get to her..")
+            else:
+                print(random.choice(code_dialogues2))
+
         elif info_buy == 'no':
             print(f"{bum}: Stop bothering me then??")
             time.sleep(1)
@@ -353,17 +380,17 @@ airport_visit()
 print_airport_comment = random.choice(airport_comment)
 
 
-print("Time to play the game")
-print("Press Enter to continue..")
+#(print("Time to play the game")
+#print("Press Enter to continue..")
 
-player_name = input("Enter your name: ")
+#player_name = input("Enter your name: ")
 
-user_input = input()
-if user_input == "":
-    print("Choose your starting point")
+#user_input = input()
+#if user_input == "":
+ #   print("Choose your starting point")
 
-kursori.execute("SELECT airport.name, iso_country FROM airport ORDER BY RAND() LIMIT 3")
-tulos = (kursori.fetchall())
+#kursori.execute("SELECT airport.name, iso_country FROM airport ORDER BY RAND() LIMIT 3")
+#tulos = (kursori.fetchall())
 
 
 for x in tulos:
@@ -558,6 +585,7 @@ def purchase_knife(bum_count):
         return bum_count
 
 def request_information(bum_count):
+    time.sleep(1)
     global raha
     global dirk
     global life
@@ -620,10 +648,22 @@ def request_information(bum_count):
         return bum_count
 
     else:
-        info_buy = input(f"{bum}: I can sell you a clue for 100. \nInput yes / no\n")
+        info_buy = input(f"{bum}: I can sell you a clue for 500. \nInput yes / no\n")
         if info_buy == 'yes':
-            raha -= 100
-            print("clue")
+            raha -= 500
+            clue = random.choice(code)
+            print("Bum pulls out piece of paper with something written on it ")
+            print("He quickly hands you the paper and disappears while you are carefully unfolding it ")
+            print(f"'{clue}' is written on the paper")
+            if clue not in code_collected:
+                print(random.choice(code_dialogues1))
+                code_collected.append(clue)
+            elif code_collected == code:
+                print("Seems like you finally have everything u needed to get to her..")
+                accept_boss_challenge()
+            else:
+                print(random.choice(code_dialogues2))
+
         elif info_buy == 'no':
             print(f"{bum}: Stop bothering me then??")
             time.sleep(1)
@@ -639,7 +679,30 @@ def beginning():
     print("Game ✧ Start")
     print("Your objective: \nFind Taylor Swifts lair and them "
           "\nvia purchasing information from various bums you encounter on your travels."
-          "\nBeat Taylor Swift because they are very bad for the climate. ")
+          "\nBeat Taylor Swift because she is very bad for the climate. ")
+
+def travel():
+    accept_boss_challenge()
+    print(random.choice(travel_dialogue))
+    print()
+    kentat = "SELECT name, continent FROM airport ORDER BY RAND() LIMIT 3"
+    kursori.execute(kentat)
+    options = kursori.fetchall()
+    for index, x in enumerate(options):
+        print(f"{index +1}. {x[0]} {x[1]}")
+    print()
+    valinta = int(input("Choose 1, 2, or 3 and press Enter to continue.."))
+
+    while valinta not in (1, 2, 3):
+        print("Invalid input ")
+        valinta = int(input("Choose 1, 2, or 3 and press Enter to continue.."))
+    else:
+        kursori.execute(f"UPDATE game SET location = '{options[valinta - 1][0]}'")
+        kursori.execute("SELECT location FROM game")
+        sijainti = kursori.fetchone()
+        print(f"U are at {sijainti[0]}
+    bum_encounter()
+    return
 
 #boss fight
 def play_russian_roulette():
@@ -692,4 +755,27 @@ def play_russian_roulette():
             print("Click! Taylor lives that one. :( ")
             chambers -= 1
 
-beginning()
+def accept_boss_challenge():
+    if code == code_collected:
+        haaste = input("Are you ready to challenge Taylor 'The Final Boss' Swift ? \nInput yes / no\n")
+        if haaste == "yes":
+            money = "SELECT money FROM inventory WHERE amount = 2000"
+            kursori.execute(money)
+            tulos = kursori.fetchall()
+
+            if tulos:
+                boss_tasolle = input("U seem to be fit to start the final game, are you sure that you want to continue? \nInput yes / no\n")
+                if boss_tasolle == "yes":
+                    play_russian_roulette()
+                elif boss_tasolle == "no":
+                    print("Hahaha you are a bloody coward..")
+                    travel()
+            else:
+                print("U need to have at least '25000' to play with her, you can't play with her")
+                travel()
+
+        if haaste == "no":
+            print("What a coward..")
+            travel()
+
+
