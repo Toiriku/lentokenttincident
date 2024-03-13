@@ -16,12 +16,6 @@ yhteys = mysql.connector.connect(
 
 kursori = yhteys.cursor()
 
-travel_dialogue = ["Where will u go next ?",
-                    "Where are u planning to go now?",
-                    "Where are u planning to go next?",
-                    "Where shall u go now ?"]
-
-
 
 raha = 1000
 dirk = 0
@@ -686,6 +680,10 @@ def beginning():
           "\nvia purchasing information from various bums you encounter on your travels."
           "\nBeat Taylor Swift because she is very bad for the climate. ")
 
+travel_dialogue = ["Where will u go next ?",
+                    "Where are u planning to go now?",
+                    "Where are u planning to go next?",
+                    "Where shall u go now ?"]
 def travel():
     accept_boss_challenge()
     print(random.choice(travel_dialogue))
