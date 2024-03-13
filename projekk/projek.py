@@ -374,25 +374,6 @@ airport_visit()
 
 print_airport_comment = random.choice(airport_comment)
 
-
-#(print("Time to play the game")
-#print("Press Enter to continue..")
-
-#player_name = input("Enter your name: ")
-
-#user_input = input()
-#if user_input == "":
- #   print("Choose your starting point")
-
-#kursori.execute("SELECT airport.name, iso_country FROM airport ORDER BY RAND() LIMIT 3")
-#tulos = (kursori.fetchall())
-
-
-for x in tulos:
-    index = tulos.index(x)
-    print(f"{index + 1}. {x}")
-
-
 def play_game(bum_count):
     game()
     bum_count -= 1
