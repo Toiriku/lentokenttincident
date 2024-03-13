@@ -10,7 +10,7 @@ yhteys = mysql.connector.connect(
          port= 3306,
          database='demogame',
          user='root',
-         password='ro0t',
+         password='liikeonlääke',
          autocommit=True
 )
 
@@ -341,37 +341,6 @@ def request_information(bum_count):
             return bum_count
 
 
-def beginning():
-    print("Game ✧ Start")
-    print("Your objective: \nFind TheBausses lair and them "
-          "\nvia purchasing information from various bums you encounter on your travels."
-          "\nBeat TheBauss because they are very bad for the climate. ")
-
-
-def airport_visit():
-    print(f"You start from {random_airport()} the airport."
-          "\nThere are a lot of people here. ")
-    time.sleep(1)
-    print(print_airport_comment)
-
-    bum_count = int(random.randint(3, 5))
-    while bum_count > 0:
-        bum_count = bum_encounter(bum_count)
-
-
-def airport_arrive():
-    print(f"You arrive to {random_airport()} the airport."
-          "\nThere are a lot of people here. ")
-    time.sleep(1)
-    print(print_airport_comment)
-
-    bum_count = int(random.randint(3, 5))
-    while bum_count > 0:
-        bum_count = bum_encounter(bum_count)
-
-
-airport_visit()
-
 print_airport_comment = random.choice(airport_comment)
 
 def play_game(bum_count):
@@ -683,8 +652,9 @@ def travel():
         kursori.execute(f"UPDATE game SET location = '{options[valinta - 1][0]}'")
         kursori.execute("SELECT location FROM game")
         sijainti = kursori.fetchone()
-        print(f"U are at {sijainti[0]}
-    bum_encounter()
+        print(f"U are at {sijainti[0]}")
+    bum_count = random.randint(3, 5)
+    bum_encounter(bum_count)
     return
 
 #boss fight
@@ -761,4 +731,5 @@ def accept_boss_challenge():
             print("What a coward..")
             travel()
 
-
+beginning()
+travel()
