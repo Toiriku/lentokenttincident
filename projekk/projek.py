@@ -394,8 +394,7 @@ for x in tulos:
 
 
 def play_game(bum_count):
-    print("mustajaakko ei löytyny")
-    # laitetaan tähän mustajaakko
+    jako(deck)
     bum_count -= 1
     return bum_count
 deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
