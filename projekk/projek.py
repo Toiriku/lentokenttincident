@@ -58,7 +58,9 @@ airport_comment = [
 print_airport_comment = random.choice(airport_comment)
 
 def bum_encounter(bum_count):
-    global raha, dirk, life
+    global raha
+    global dirk
+    global life
 
     time.sleep(3)
     dialog_bum_encounter1 = [
@@ -216,8 +218,6 @@ def purchase_knife(bum_count):
 
 
 
-
-
 def codeCreation():
     global code_collected
     global code
@@ -236,7 +236,6 @@ code_dialogues2 = ["U already have that one, damn it ..",
                    "Not the one u needed.."
                    "Bum sold u some crap, u got scammed"
                    "That piece of paper has nothing to do with the boss, better luck next time!"]
-
 
 
 
@@ -468,7 +467,7 @@ def game():
                 print("You bust")
                 raha -= bet
                 play_again()
-            elif choice == 's':
+        elif choice == 's':
                 while total(dealer_kasi) < 17:
                     hit(dealer_kasi)
                     print(dealer_kasi)
@@ -478,146 +477,19 @@ def game():
                         play_again()
                     score(dealer_kasi, player_kasi)
                     play_again()
-            elif choice == 'q':
+        elif choice == 'q':
                 print("Thanks for the game")
                 quit = True
                 exit()
 
 
-def purchase_knife(bum_count):
-    global raha
-    global dirk
-    global bum
-
-    knife_buy = input(f"{bum}: So you wish to purchase a knife huh? \nInput yes / no\n")
-    if knife_buy == 'yes':
-        acquire_a_shank = input(f"{bum}: You can have it for 300. \nInput yes / no\n")
-        if acquire_a_shank == 'yes':
-            print("shank acquired")
-            raha -= 300
-            dirk = 1
-            time.sleep(1)
-            print(f"{bum}: A favorable deal")
-            time.sleep(1)
-            print("Bum takes off and disappears to the crowds. ")
-            time.sleep(2)
-            return bum_count
-        elif acquire_a_shank == 'no':
-            print(f"{bum}: Stop bothering me then??")
-            time.sleep(1)
-            print("Bum takes off and disappears to the crowds. ")
-            time.sleep(2)
-            bum_count -= 1
-            return bum_count
-        else:
-            print("Invalid input, encounter will now end. Better luck next time.")
-            bum_count -= 1
-            return bum_count
-    elif knife_buy == 'no':
-        print(f"{bum}: Stop bothering me then??")
-        bum_count -= 1
-        return bum_count
-    else:
-        print("Invalid input, encounter will now end. Better luck next time.")
-        bum_count -= 1
-        return bum_count
-
-def request_information(bum_count):
-    time.sleep(1)
-    global raha
-    global dirk
-    global life
-
-    inforequest = [1, 2, 3, 4]
-    inforequest_outcome = random.choice(inforequest)
-
-    if inforequest_outcome == 1:
-        print("The less fortunate individual extends an invitation, "
-              "challenging you to engage in a refined fencing duel. ")
-        time.sleep(3)
-        if dirk == 1:
-            print("You pull your knife out.")
-            time.sleep(1)
-            print("The bum notices the knife and decides to exit the fencing duel by running away.")
-            time.sleep(2)
-        else:
-            print("The call to join was not voluntary and the bum charges towards you")
-            time.sleep(2)
-            time.sleep(1)
-            bumcharge_outcome = random.randint(1, 3)
-            if bumcharge_outcome == 1:
-                print("With agile finesse, you skillfully evaded the oncoming advance of the bum, "
-                      "escaping their charge, and gracefully exited the scene, "
-                      "leaving the duel behind")
-                time.sleep(4)
-            else:
-                dialog_death = [
-                    "After an agile maneuver, the bum successfully struck, leaving me wounded and bleeding.",
-                    "A quick and nimble move from the bum resulted in a successful hit, leaving you wounded.",
-                    "Executing a swift and nimble move, the bum landed a successful strike, leaving you injured.",
-                    "The bum executed a swift maneuver, landing a successful hit that left you wounded.",
-                    "A nimble move from the bum resulted in a successful strike, leaving you injured and bleeding.",
-                    "Executing a swift maneuver, the homeless bum landed a hit, leaving you wounded and bleeding.",
-                    "A speedy move from the bum resulted in a successful strike, leaving you injured and bleeding.",
-                    "A nimble maneuver from the homeless bum resulted in a successful hit, leaving you wounded.",
-                    "With a quick move, the bum executed a hit, causing you to be injured and bleeding.",
-                    "A rapid maneuver from the bum led to a successful strike, leaving you wounded and bleeding.",
-                    "Following a swift move by the bum, a precise strike ensued, resulting in you being injured.",
-                    "After a quick maneuver by the bum, they executed a hit, causing you to be wounded.",
-                    "After a nimble maneuver by the bum, they executed a hit, leaving you wounded and bleeding.",
-                    "Following a rapid maneuver by the bum, a successful hit ensued, resulting in you being wounded.",
-                    "Executing a speedy move, the bum landed a hit, resulting in you being injured and bleeding.",
-                    "In the wake of a swift move by the homeless bum, they struck, leaving you injured and bleeding.",
-                    "In the aftermath of a rapid move by the homeless bum, they struck, causing you to be injured.",
-                    "In the wake of a quick maneuver by the bum, they struck, causing you to be wounded and bleeding.",
-                    "In the aftermath of a nimble maneuver by the homeless bum, they struck, leaving you wounded and.",
-                    "In the wake of a nimble move by the homeless bum, they struck, causing you to be bleeding."
-                ]
-                print_death = random.choice(dialog_death)
-                print(print_death)
-                time.sleep(4)
-                print("You Died. ")
-                life = 1
-
-    elif inforequest_outcome == 2:
-        print(f"{bum}: I am no snitch. ")
-        print(f"{bum} walks away. ")
-        bum_count -= 1
-        return bum_count
-
-    else:
-        info_buy = input(f"{bum}: I can sell you a clue for 500. \nInput yes / no\n")
-        if info_buy == 'yes':
-            raha -= 500
-            clue = random.choice(code)
-            print("Bum pulls out piece of paper with something written on it ")
-            print("He quickly hands you the paper and disappears while you are carefully unfolding it ")
-            print(f"'{clue}' is written on the paper")
-            if clue not in code_collected:
-                print(random.choice(code_dialogues1))
-                code_collected.append(clue)
-            elif code_collected == code:
-                print("Seems like you finally have everything u needed to get to her..")
-                accept_boss_challenge()
-            else:
-                print(random.choice(code_dialogues2))
-
-        elif info_buy == 'no':
-            print(f"{bum}: Stop bothering me then??")
-            time.sleep(1)
-            print(f"{bum} takes off and disappears to the crowds. ")
-            bum_count -= 1
-            return bum_count
-        else:
-            print("Invalid input, encounter will now end. Better luck next time. ")
-            bum_count -= 1
-            return bum_count
-
 def beginning():
     print("Game ✧ Start")
+    time.sleep(1)
     print("Your objective: \nFind Taylor Swifts lair and them "
           "\nvia purchasing information from various bums you encounter on your travels."
           "\nBeat Taylor Swift because she is very bad for the climate. ")
+    time.sleep(4)
 
 travel_dialogue = ["Where will u go next ?",
                     "Where are u planning to go now?",
@@ -626,6 +498,7 @@ travel_dialogue = ["Where will u go next ?",
 def travel():
     accept_boss_challenge()
     print(random.choice(travel_dialogue))
+    time.sleep(2)
     print()
     kentat = "SELECT name, continent FROM airport ORDER BY RAND() LIMIT 3"
     kursori.execute(kentat)
@@ -724,4 +597,6 @@ def accept_boss_challenge():
             travel()
 
 beginning()
-travel()
+
+while True:
+    travel()
