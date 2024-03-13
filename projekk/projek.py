@@ -20,6 +20,7 @@ kursori = yhteys.cursor()
 raha = 1000
 dirk = 0
 life = 0
+bum_count = 3
 bums = ["bum"]
 bum = random.choice(bums)
 
@@ -57,10 +58,12 @@ airport_comment = [
 
 print_airport_comment = random.choice(airport_comment)
 
-def bum_encounter(bum_count):
+
+def bum_encounter():
     global raha
     global dirk
     global life
+    global bum_count
 
     time.sleep(3)
     dialog_bum_encounter1 = [
@@ -100,7 +103,7 @@ def bum_encounter(bum_count):
         "Select an option: ",
         "Opt for your action: ",
         "Decide your move: "
-        ]
+    ]
     print_bum_encounter3 = random.choice(dialog_bum_encounter3)
     print(print_bum_encounter3)
 
@@ -180,7 +183,7 @@ def bum_encounter(bum_count):
     return bum_count
 
 
-def purchase_knife(bum_count):
+def purchase_knife():
     global raha
     global dirk
     global bum
@@ -197,26 +200,22 @@ def purchase_knife(bum_count):
             time.sleep(1)
             print("Bum takes off and disappears to the crowds. ")
             time.sleep(2)
-            return bum_count
+            return
         elif acquire_a_shank == 'no':
             print(f"{bum}: Stop bothering me then??")
             time.sleep(1)
             print("Bum takes off and disappears to the crowds. ")
             time.sleep(2)
-            bum_count -= 1
-            return bum_count
+            return
         else:
             print("Invalid input, encounter will now end. Better luck next time.")
-            bum_count -= 1
-            return bum_count
+            return
     elif knife_buy == 'no':
         print(f"{bum}: Stop bothering me then??")
-        bum_count -= 1
-        return bum_count
+        return
     else:
         print("Invalid input, encounter will now end. Better luck next time.")
-        bum_count -= 1
-        return bum_count
+        return
 
 
 
@@ -243,7 +242,7 @@ code_dialogues2 = ["U already have that one, damn it ..",
 
 codeCreation()
 
-def request_information(bum_count):
+def request_information():
     global raha
     global dirk
     global life
@@ -301,8 +300,7 @@ def request_information(bum_count):
     elif inforequest_outcome == 2:
         print(f"{bum}: I am no snitch. ")
         print(f"{bum} walks away. ")
-        bum_count -= 1
-        return bum_count
+        return
 
     else:
         info_buy = input(f"{bum}: I can sell you a clue for 500. \nInput yes / no\n")
@@ -324,20 +322,17 @@ def request_information(bum_count):
             print(f"{bum}: Stop bothering me then??")
             time.sleep(1)
             print(f"{bum} takes off and disappears to the crowds. ")
-            bum_count -= 1
-            return bum_count
+            return
         else:
             print("Invalid input, encounter will now end. Better luck next time. ")
-            bum_count -= 1
-            return bum_count
+            return
 
 
 print_airport_comment = random.choice(airport_comment)
 
-def play_game(bum_count):
+def play_game():
     game()
-    bum_count -= 1
-    return bum_count
+    return
 deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
 bet = 1
 
@@ -498,6 +493,7 @@ travel_dialogue = ["Where will u go next ?",
                     "Where are u planning to go next?",
                     "Where shall u go now ?"]
 def travel():
+    global bum_count
     accept_boss_challenge()
     print(random.choice(travel_dialogue))
     time.sleep(2)
@@ -518,10 +514,8 @@ def travel():
         kursori.execute("SELECT location FROM game")
         sijainti = kursori.fetchone()
         print(f"U are at {sijainti[0]}")
-    bum_count = int(random.randint(3, 5))
     while bum_count > 0:
-        bum_count = bum_encounter(bum_count)
-    bum_encounter(bum_count)
+        bum_encounter()
     return
 
 #boss fight
@@ -599,6 +593,4 @@ def accept_boss_challenge():
             travel()
 
 beginning()
-
-while True:
-    travel()
+travel()
