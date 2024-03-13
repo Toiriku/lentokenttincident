@@ -1,6 +1,6 @@
 import os
 import random
-
+import math
 import time
 import string
 import mysql.connector
@@ -653,7 +653,9 @@ def travel():
         kursori.execute("SELECT location FROM game")
         sijainti = kursori.fetchone()
         print(f"U are at {sijainti[0]}")
-    bum_count = random.randint(3, 5)
+    bum_count = int(random.randint(3, 5))
+    while bum_count > 0:
+        bum_count = bum_encounter(bum_count)
     bum_encounter(bum_count)
     return
 
