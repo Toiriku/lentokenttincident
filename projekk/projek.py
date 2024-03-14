@@ -20,7 +20,7 @@ raha = 100000
 dirk = 0
 life = 0
 bum_count = 0
-
+code_collected = []
 bums = [
     "unfortunate individual",
     "street dweller",
@@ -43,7 +43,6 @@ eri_ender = [
     "move on. ",
     "find a new location. "
 ]
-random.choice(eri_ender)
 pummit_loppu = [
     f"This area contains no more {random.choice(bums)}s, {random.choice(eri_ending)}{random.choice(eri_ender)}",
     f"This location contains no more {random.choice(bums)}s, {random.choice(eri_ending)}{random.choice(eri_ender)}",
@@ -93,17 +92,6 @@ travel_dialogue = ["Where will u go?",
                     "Where are u planning to go?",
                     "Where are u planning to go?",
                     "Where shall u go?"]
-
-
-
-characters = string.ascii_letters + string.digits
-code = ''.join(random.choices(characters, k=1))
-code_collected = []
-
-
-
-
-
 
 def bum_encounter():
     global raha, dirk, life, bum_count
@@ -218,6 +206,8 @@ def bum_encounter():
         request_information()
     elif action == "4":
         print("You continued on your way. ")
+    elif action == "boss":
+        accept_boss_challenge()
     else:
         print("Invalid input, encounter will now end. Better luck next time.")
 
@@ -310,26 +300,48 @@ def request_information():
         if info_buy == 'yes':
             raha -= 500
             clue = random.choice(code)
+            print("Bum pulls out piece of paper with something written on it ")
             print(f"The {random.choice(bums)} pulls out piece of paper with something written on it ")
             print("He quickly hands you the paper and disappears while you are carefully unfolding it ")
             print(f"'{clue}' is written on the paper")
             if clue not in code_collected:
                 print(random.choice(code_dialogues1))
                 code_collected.append(clue)
+                print("Code collected:", code_collected)
                 if code_collected == code:
                     print("Seems like you finally have everything u needed to get to her..")
                     accept_boss_challenge()
             else:
                 print(random.choice(code_dialogues2))
 
-        elif info_buy == 'no':
-            print(f"{random.choice(bums)}: Stop bothering me then??")
-            time.sleep(1)
-            print(f"The {random.choice(bums)} takes off and disappears to the crowds. ")
-        else:
-            print("Invalid input, encounter will now end. Better luck next time. ")
+def accept_boss_challenge():
+    global code_collected, code, life
+    if code_collected == code:
+        haaste = input("Are you ready to challenge Taylor 'The Final Boss' Swift ? \nInput yes / no\n")
+        if haaste == "yes":
+            if raha >= 2000:
+                boss_tasolle = input("You seem fit to start the final duel, are you sure that you want to continue? \nInput yes / no\n")
+                if boss_tasolle == "yes":
+                    play_russian_roulette()
+                elif boss_tasolle == "no":
+                    print("Hahaha you are a bloody coward..")
+                    travel()
+            else:
+                print("You need to have at least '2000' to play with her, you can't play with her")
+                travel()
+        elif haaste == "no":
+            print("What a coward..")
+            travel()
+    else:
+        print("You don't have all the necessary pieces of code yet.")
 
-
+def codeCreation():
+    global code, code_collected
+    characters = string.ascii_letters + string.digits
+    code = ''.join(random.choices(characters, k=1))
+    if code_collected == code:
+        accept_boss_challenge()
+    return code
 
 code_dialogues1 = ["You got piece of code you needed",
                    "You are one step closer to that devil..",
@@ -340,6 +352,7 @@ code_dialogues2 = ["U already have that one, damn it ..",
                    "Not the one u needed.."
                    f"{random.choice(bums)} sold u some crap, u got scammed"
                    "That piece of paper has nothing to do with the boss, better luck next time!"]
+codeCreation()
 
 def play_game():
     game()
@@ -557,14 +570,10 @@ def accept_boss_challenge():
         print("What a coward..")
         travel()
 
-if code_collected == code:
-    accept_boss_challenge()
-
 def peli():
     beginning()
     while life == 0:
         while bum_count == 0:
-            random.choice(pummit_loppu)
             travel()
             while bum_count > 0:
                 bum_encounter()
