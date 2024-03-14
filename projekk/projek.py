@@ -1,6 +1,5 @@
 import os
 import random
-import math
 import time
 import string
 import mysql.connector
@@ -10,85 +9,129 @@ yhteys = mysql.connector.connect(
          port= 3306,
          database='demogame',
          user='root',
-         password='liikeonlääke',
+         password='bamse',
          autocommit=True
 )
 
 kursori = yhteys.cursor()
 
 
-raha = 1000
+raha = 100000
 dirk = 0
 life = 0
 bum_count = 0
-bums = ["bum"]
-bum = random.choice(bums)
 
+bums = [
+    "unfortunate individual",
+    "street dweller",
+    "beggar",
+    "esteemed companion",
+    "exquisite street dweller",
+    "street connoisseur",
+    "great financial decision maker",
+    "untamed wanderer",
+    "wild bum"
+]
+eri_ending = [
+    "time to ",
+    "it's time to ",
+    "let's "
+]
+eri_ender = [
+    "relocate. ",
+    "go elsewhere. ",
+    "move on. ",
+    "find a new location. "
+]
+random.choice(eri_ender)
+pummit_loppu = [
+    f"This area contains no more {random.choice(bums)}s, {random.choice(eri_ending)}{random.choice(eri_ender)}",
+    f"This location contains no more {random.choice(bums)}s, {random.choice(eri_ending)}{random.choice(eri_ender)}",
+    f"This place contains no more {random.choice(bums)}s, {random.choice(eri_ending)}{random.choice(eri_ender)}",
+
+    f"There are no more {random.choice(bums)}s in this area, {random.choice(eri_ending)}{random.choice(eri_ender)}",
+    f"There are no more {random.choice(bums)}s in this location, {random.choice(eri_ending)}{random.choice(eri_ender)}",
+    f"There are no more {random.choice(bums)}s in this place, {random.choice(eri_ending)}{random.choice(eri_ender)}",
+
+    f"You see no more {random.choice(bums)}s in this location, {random.choice(eri_ending)}{random.choice(eri_ender)}",
+    f"You see no more {random.choice(bums)}s in this place, {random.choice(eri_ending)}{random.choice(eri_ender)}",
+    f"You see no more {random.choice(bums)}s in here, {random.choice(eri_ending)}{random.choice(eri_ender)}"
+
+]
 airport_comment = [
-    "During your exploration, you come upon a passage where a small group of bums can be seen; "
+    f"During your exploration, you come upon a passage where a small group of {random.choice(bums)}s can be seen; "
     "you decide to check it out.",
-    "While navigating around the airport, you discover a hallway with a handful of bums, "
+    f"While navigating around the airport, you discover a hallway with a handful of {random.choice(bums)}s, "
     "leading you to investigate further.",
-    "As you move about, a corridor with a few bums becomes evident, compelling you to make your way there.",
-    "In your journey, you stumble upon a passage where a few bums are present, prompting you to explore.",
-    "While exploring the surroundings, you find a hallway with a small group of bums, "
+    f"As you move about, a corridor with a few {random.choice(bums)}s becomes evident, compelling you to make your way there.",
+    f"In your journey, you stumble upon a passage where a few {random.choice(bums)}s are present, prompting you to explore.",
+    f"While exploring the surroundings, you find a hallway with a small group of {random.choice(bums)}s, "
     "and you decide to head in that direction.",
-    "As you wander, a corridor filled with bums in need of a gambling catches your attention, "
+    f"As you wander, a corridor filled with {random.choice(bums)}s in need of a gambling catches your attention, "
     "urging you to approach.",
-    "During your journey, you encounter a passage where a small group of bums can be observed; "
+    f"During your journey, you encounter a passage where a small group of {random.choice(bums)}s can be observed; "
     "you decide to investigate.",
-    "While navigating, you chance upon a hallway with a handful of bums, motivating you to explore further.",
-    "As you stroll, a corridor featuring a few bums becomes visible, compelling you to make your way there.",
-    "In your exploration, you happen upon a passage where a few bums are present, prompting you to investigate.",
-    "As you walk around, a corridor occupied by bums in need of gambling captures your attention, "
+    f"While navigating, you chance upon a hallway with a handful of {random.choice(bums)}s, motivating you to explore further.",
+    f"As you stroll, a corridor featuring a few {random.choice(bums)}s becomes visible, compelling you to make your way there.",
+    f"In your exploration, you happen upon a passage where a few {random.choice(bums)}s are present, prompting you to investigate.",
+    f"As you walk around, a corridor occupied by {random.choice(bums)}s in need of gambling captures your attention, "
     "urging you to approach.",
-    "During your journey, you discover a passage where a small group of bums can be seen; you decide to check it out.",
-    "While navigating around the airport, you notice a hallway with a handful of bums, "
+    f"During your journey, you discover a passage where a small group of {random.choice(bums)}s can be seen; you decide to check it out.",
+    f"While navigating around the airport, you notice a hallway with a handful of {random.choice(bums)}s, "
     "motivating you to explore further.",
-    "As you move about, a corridor with a few bums becomes evident, compelling you to make your way there.",
-    "In your exploration, you stumble upon a passage where a few bums are present, prompting you to explore.",
-    "While exploring the surroundings, you find a hallway with a small group of bums, "
+    f"As you move about, a corridor with a few {random.choice(bums)}s becomes evident, compelling you to make your way there.",
+    f"In your exploration, you stumble upon a passage where a few {random.choice(bums)}s are present, prompting you to explore.",
+    f"While exploring the surroundings, you find a hallway with a small group of {random.choice(bums)}s, "
     "and you decide to head in that direction.",
-    "As you wander, a corridor filled with bums in need of gambling catches your attention, "
+    f"As you wander, a corridor filled with {random.choice(bums)}s in need of gambling catches your attention, "
     "urging you to approach.",
-    "During your journey, you encounter a passage where a small group of bums can be observed; "
+    f"During your journey, you encounter a passage where a small group of {random.choice(bums)}s can be observed; "
     "you decide to investigate."
 ]
-
-
 print_airport_comment = random.choice(airport_comment)
+travel_dialogue = ["Where will u go?",
+                    "Where are u planning to go?",
+                    "Where are u planning to go?",
+                    "Where shall u go?"]
+
+
+
+characters = string.ascii_letters + string.digits
+code = ''.join(random.choices(characters, k=1))
+code_collected = []
+
+
+
+
 
 
 def bum_encounter():
-    global raha
-    global dirk
-    global life
-    global bum_count
-
+    global raha, dirk, life, bum_count
+    bum_count -= 1
     time.sleep(3)
     dialog_bum_encounter1 = [
-        f"You have stumbled upon a wild {bum}.",
-        f"A feral figure appears in your path, a {bum}.",
-        f"In your way stands an untamed wanderer, a {bum}.",
-        f"A rogue character emerges before you, a {bum}.",
-        f"You find yourself face to face in the home turf of the {bum}.",
-        f"Your travels are halted, you notice an uncontrolled street dweller, a {bum}.",
-        f"A rogue individual appears in your presence, a {bum}."
+        f"You have stumbled upon a {random.choice(bums)}.",
+        f"A feral figure appears in your path, a {random.choice(bums)}.",
+        f"In your way stands an untamed wanderer, a {random.choice(bums)}.",
+        f"A rogue character emerges before you, a {random.choice(bums)}.",
+        f"You find yourself face to face in the home turf of the {random.choice(bums)}.",
+        f"Your travels are halted, you notice a {random.choice(bums)}.",
+        f"A rogue individual appears in your presence, a {random.choice(bums)}."
     ]
     print_bum_encounter1 = random.choice(dialog_bum_encounter1)
     print(print_bum_encounter1)
 
     time.sleep(2)
     dialog_bum_encounter2 = [
-        "Will you engage in a game with the bum, procure a knife from them, or attempt to extract information?",
-        "Are you inclined to partake in a game with the bum, buy a knife, or seek information?",
-        "Will you entertain the possibility of a game with the bum, making a knife purchase, "
+        f"Will you engage in a game with the {random.choice(bums)}, procure a knife from them, or attempt to extract information?",
+        f"Are you inclined to partake in a game with the {random.choice(bums)}, buy a knife, or seek information?",
+        f"Will you entertain the possibility of a game with the {random.choice(bums)}, making a knife purchase, "
         "or extracting information?",
-        "Are you open to participating in a game with the bum, securing a knife, or obtaining information?",
-        "Would you consider joining a game with the bum, procuring a knife, or attempting to gather information?",
-        "Are you up for engaging in a game with the bum, buying a knife, or seeking information?",
-        "Will you consider playing a game with the bum, purchasing a knife, or extracting information?",
-        "Do you desire to participate in a game with the bum, obtain a knife, or try to gather information?"
+        f"Are you open to participating in a game with the {random.choice(bums)}, securing a knife, or obtaining information?",
+        f"Would you consider joining a game with the {random.choice(bums)}, procuring a knife, or attempting to gather information?",
+        f"Are you up for engaging in a game with the {random.choice(bums)}, buying a knife, or seeking information?",
+        f"Will you consider playing a game with the {random.choice(bums)}, purchasing a knife, or extracting information?",
+        f"Do you desire to participate in a game with the {random.choice(bums)}, obtain a knife, or try to gather information?"
     ]
     print_bum_encounter2 = random.choice(dialog_bum_encounter2)
     print(print_bum_encounter2)
@@ -133,7 +176,7 @@ def bum_encounter():
     ]
     print_action2 = random.choice(dialog_action2)
     dialog_action3 = [
-        "Inquire for details on TheBauss. ",
+        "Inquire for details on Taylor Swifts location. ",
         "Inquire for information. ",
         "Inquire for knowledge. ",
         "Seek information. ",
@@ -175,161 +218,128 @@ def bum_encounter():
         request_information()
     elif action == "4":
         print("You continued on your way. ")
-        bum_count -= 1
-        return bum_count
     else:
         print("Invalid input, encounter will now end. Better luck next time.")
-    bum_count -= 1
-    return bum_count
-
-
 
 def purchase_knife():
-    global raha
-    global dirk
-    global bum
+    global raha, dirk, bum
 
-    knife_buy = input(f"{bum}: So you wish to purchase a knife huh? \nInput yes / no\n")
+    knife_buy = input(f"{random.choice(bums)}: So you wish to purchase a knife huh? \nInput yes / no\n")
     if knife_buy == 'yes':
-        acquire_a_shank = input(f"{bum}: You can have it for 300. \nInput yes / no\n")
+        acquire_a_shank = input(f"{random.choice(bums)}: You can have it for 300. \nInput yes / no\n")
         if acquire_a_shank == 'yes':
             print("shank acquired")
             raha -= 300
             dirk = 1
             time.sleep(1)
-            print(f"{bum}: A favorable deal")
+            print(f"{random.choice(bums)}: A favorable deal")
             time.sleep(1)
-            print("Bum takes off and disappears to the crowds. ")
+            print(f"{random.choice(bums)} takes off and disappears to the crowds. ")
             time.sleep(2)
-            return
         elif acquire_a_shank == 'no':
-            print(f"{bum}: Stop bothering me then??")
+            print(f"{random.choice(bums)}: Stop bothering me then??")
             time.sleep(1)
-            print("Bum takes off and disappears to the crowds. ")
+            print(f"{random.choice(bums)} takes off and disappears to the crowds. ")
             time.sleep(2)
-            return
         else:
             print("Invalid input, encounter will now end. Better luck next time.")
-            return
     elif knife_buy == 'no':
-        print(f"{bum}: Stop bothering me then??")
-        return
+        print(f"{random.choice(bums)}: Stop bothering me then??")
     else:
         print("Invalid input, encounter will now end. Better luck next time.")
-        return
-
-
-
-def codeCreation():
-    global code_collected
-    global code
-    code_collected = []
-    characters = string.ascii_letters + string.digits
-    code = ''.join(random.choices(characters, k=6))
-    return code
-
-code_dialogues1 = ["You got piece of code you needed",
-                   "You are one step closer to that devil..",
-                   "That is exactly what you needed",
-                   "That clue will help u get to the boss..",
-                   ]
-
-code_dialogues2 = ["U already have that one, damn it ..",
-                   "Not the one u needed.."
-                   "Bum sold u some crap, u got scammed"
-                   "That piece of paper has nothing to do with the boss, better luck next time!"]
-
-
-
-codeCreation()
 
 def request_information():
-    global raha
-    global dirk
-    global life
+    global code_collected, code, raha, dirk, life
 
-    inforequest = [1, 2, 3, 4]
-    inforequest_outcome = random.choice(inforequest)
-    if inforequest_outcome == 1:
-        print("The less fortunate individual extends an invitation, "
+    inforequest = random.randint(1, 4)
+
+    if inforequest == 1:
+        print(f"The {random.choice(bums)} extends an invitation, "
               "challenging you to engage in a refined fencing duel. ")
         time.sleep(3)
         if dirk == 1:
             print("You pull your knife out.")
             time.sleep(1)
-            print("The bum notices the knife and decides to exit the fencing duel by running away.")
+            print(f"The {random.choice(bums)} notices the knife and decides to exit the fencing duel by running away.")
             time.sleep(2)
         else:
-            print("The call to join was not voluntary and the bum charges towards you")
+            print(f"The call to join was not voluntary and the {random.choice(bums)} charges towards you")
             time.sleep(2)
-            time.sleep(1)
             bumcharge_outcome = random.randint(1, 3)
             if bumcharge_outcome == 1:
-                print("With agile finesse, you skillfully evaded the oncoming advance of the bum, "
+                print(f"With agile finesse, you skillfully evaded the oncoming advance of the {random.choice(bums)}, "
                       "escaping their charge, and gracefully exited the scene, "
                       "leaving the duel behind")
                 time.sleep(4)
             else:
                 dialog_death = [
-                    "After an agile maneuver, the bum successfully struck, leaving me wounded and bleeding.",
-                    "A quick and nimble move from the bum resulted in a successful hit, leaving you wounded.",
-                    "Executing a swift and nimble move, the bum landed a successful strike, leaving you injured.",
-                    "The bum executed a swift maneuver, landing a successful hit that left you wounded.",
-                    "A nimble move from the bum resulted in a successful strike, leaving you injured and bleeding.",
-                    "Executing a swift maneuver, the homeless bum landed a hit, leaving you wounded and bleeding.",
-                    "A speedy move from the bum resulted in a successful strike, leaving you injured and bleeding.",
-                    "A nimble maneuver from the homeless bum resulted in a successful hit, leaving you wounded.",
-                    "With a quick move, the bum executed a hit, causing you to be injured and bleeding.",
-                    "A rapid maneuver from the bum led to a successful strike, leaving you wounded and bleeding.",
-                    "Following a swift move by the bum, a precise strike ensued, resulting in you being injured.",
-                    "After a quick maneuver by the bum, they executed a hit, causing you to be wounded.",
-                    "After a nimble maneuver by the bum, they executed a hit, leaving you wounded and bleeding.",
-                    "Following a rapid maneuver by the bum, a successful hit ensued, resulting in you being wounded.",
-                    "Executing a speedy move, the bum landed a hit, resulting in you being injured and bleeding.",
-                    "In the wake of a swift move by the homeless bum, they struck, leaving you injured and bleeding.",
-                    "In the aftermath of a rapid move by the homeless bum, they struck, causing you to be injured.",
-                    "In the wake of a quick maneuver by the bum, they struck, causing you to be wounded and bleeding.",
-                    "In the aftermath of a nimble maneuver by the homeless bum, they struck, leaving you wounded and.",
-                    "In the wake of a nimble move by the homeless bum, they struck, causing you to be bleeding."
+                    f"After an agile maneuver, the {random.choice(bums)} successfully struck, leaving me wounded and bleeding.",
+                    f"A quick and nimble move from the {random.choice(bums)} resulted in a successful hit, leaving you wounded.",
+                    f"Executing a swift and nimble move, the {random.choice(bums)} landed a successful strike, leaving you injured.",
+                    f"The {random.choice(bums)} executed a swift maneuver, landing a successful hit that left you wounded.",
+                    f"A nimble move from the {random.choice(bums)} resulted in a successful strike, leaving you injured and bleeding.",
+                    f"Executing a swift maneuver, the {random.choice(bums)} landed a hit, leaving you wounded and bleeding.",
+                    f"A speedy move from the {random.choice(bums)} resulted in a successful strike, leaving you injured and bleeding.",
+                    f"A nimble maneuver from the {random.choice(bums)} resulted in a successful hit, leaving you wounded.",
+                    f"With a quick move, the {random.choice(bums)} executed a hit, causing you to be injured and bleeding.",
+                    f"A rapid maneuver from the {random.choice(bums)} led to a successful strike, leaving you wounded and bleeding.",
+                    f"Following a swift move by the {random.choice(bums)}, a precise strike ensued, resulting in you being injured.",
+                    f"After a quick maneuver by the {random.choice(bums)}, they executed a hit, causing you to be wounded.",
+                    f"After a nimble maneuver by the {random.choice(bums)}, they executed a hit, leaving you wounded and bleeding.",
+                    f"Following a rapid maneuver by the {random.choice(bums)}, a successful hit ensued, resulting in you being wounded.",
+                    f"Executing a speedy move, the {random.choice(bums)} landed a hit, resulting in you being injured and bleeding.",
+                    f"In the wake of a swift move by the {random.choice(bums)}, they struck, leaving you injured and bleeding.",
+                    f"In the aftermath of a rapid move by the {random.choice(bums)}, they struck, causing you to be injured.",
+                    f"In the wake of a quick maneuver by the {random.choice(bums)}, they struck, causing you to be wounded and bleeding.",
+                    f"In the aftermath of a nimble maneuver by the {random.choice(bums)}, they struck, leaving you wounded and.",
+                    f"In the wake of a nimble move by the {random.choice(bums)}, they struck, causing you to be bleeding."
                 ]
                 print_death = random.choice(dialog_death)
                 print(print_death)
                 time.sleep(4)
                 print("You Died. ")
                 life = 1
+                exit()
 
-    elif inforequest_outcome == 2:
-        print(f"{bum}: I am no snitch. ")
-        print(f"{bum} walks away. ")
-        return
+    elif inforequest == 2:
+        print(f"{random.choice(bums)}: I am no snitch. ")
+        print(f"{random.choice(bums)} disappears. ")
 
     else:
-        info_buy = input(f"{bum}: I can sell you a clue for 500. \nInput yes / no\n")
+        info_buy = input(f"{random.choice(bums)}: I can sell you a clue for 500. \nInput yes / no\n")
         if info_buy == 'yes':
             raha -= 500
             clue = random.choice(code)
-            print("Bum pulls out piece of paper with something written on it ")
+            print(f"The {random.choice(bums)} pulls out piece of paper with something written on it ")
             print("He quickly hands you the paper and disappears while you are carefully unfolding it ")
             print(f"'{clue}' is written on the paper")
             if clue not in code_collected:
                 print(random.choice(code_dialogues1))
                 code_collected.append(clue)
-            elif code_collected == code:
-                print("Seems like you finally have everything u needed to get to her..")
+                if code_collected == code:
+                    print("Seems like you finally have everything u needed to get to her..")
+                    accept_boss_challenge()
             else:
                 print(random.choice(code_dialogues2))
 
         elif info_buy == 'no':
-            print(f"{bum}: Stop bothering me then??")
+            print(f"{random.choice(bums)}: Stop bothering me then??")
             time.sleep(1)
-            print(f"{bum} takes off and disappears to the crowds. ")
-            return
+            print(f"The {random.choice(bums)} takes off and disappears to the crowds. ")
         else:
             print("Invalid input, encounter will now end. Better luck next time. ")
-            return
 
 
-print_airport_comment = random.choice(airport_comment)
+
+code_dialogues1 = ["You got piece of code you needed",
+                   "You are one step closer to that devil..",
+                   "That is exactly what you needed",
+                   "That clue will help u get to the boss..",
+                   ]
+code_dialogues2 = ["U already have that one, damn it ..",
+                   "Not the one u needed.."
+                   f"{random.choice(bums)} sold u some crap, u got scammed"
+                   "That piece of paper has nothing to do with the boss, better luck next time!"]
 
 def play_game():
     game()
@@ -352,7 +362,6 @@ def nosto():
         kortti = "A"
     return kortti
 
-
 def total(kasi):
     total_value = 0
     num_aces = 0
@@ -372,12 +381,10 @@ def total(kasi):
         num_aces -= 1
     return total_value
 
-
 def print_result(dealer_kasi, player_kasi):
     os.system('cls' if os.name == 'nt' else 'clear')
     print("dealer has: ", dealer_kasi, " (total", total(dealer_kasi), ")")
     print("player has: ", player_kasi, " (total", total(player_kasi), ")")
-
 
 def game():
     global raha, bet, dealer_kasi, player_kasi
@@ -406,7 +413,6 @@ def game():
                 print("Dealer hits: ", dealer_kasi)
             score(dealer_kasi, player_kasi)
             break
-    kaikki_funktiot()
 
 def score(dealer_kasi, player_kasi):
     global raha
@@ -431,7 +437,6 @@ def score(dealer_kasi, player_kasi):
     print("Your remaining money:", raha)
     bum_encounter()
 
-
 def make_bet():
     global bet, raha
     print("You have", raha)
@@ -448,22 +453,16 @@ def make_bet():
         else:
             print("Please enter a valid bet amount.")
 
-
 def beginning():
     print("Game ✧ Start")
     time.sleep(1)
     print("Your objective: \nFind Taylor Swifts lair and them "
-          "\nvia purchasing information from various bums you encounter on your travels."
+          f"\nvia purchasing information from various {random.choice(bums)}s you encounter on your travels."
           "\nBeat Taylor Swift because she is very bad for the climate. ")
     time.sleep(4)
 
-travel_dialogue = ["Where will u go next ?",
-                    "Where are u planning to go now?",
-                    "Where are u planning to go next?",
-                    "Where shall u go now ?"]
 def travel():
     global bum_count
-    accept_boss_challenge()
     print(random.choice(travel_dialogue))
     time.sleep(2)
     print()
@@ -483,14 +482,12 @@ def travel():
         kursori.execute("UPDATE game SET location = %s", (selected_location,))
         kursori.execute("SELECT location FROM game")
         sijainti = kursori.fetchone()
-        print(f"U are at {sijainti[0]}")
+        print(f"You arrive at {sijainti[0]}")
 
     kursori.fetchall()
 
-    while bum_count > 0:
-        bum_encounter()
+    bum_count += 3
     return
-
 
 #boss fight
 def play_russian_roulette():
@@ -508,7 +505,7 @@ def play_russian_roulette():
             print("BANG! You lose!")
             print("Game over")
             time.sleep(1)
-            break
+            exit()
         else:
             print("Click! You live that one.")
             chambers -= 1
@@ -524,7 +521,7 @@ def play_russian_roulette():
             time.sleep(1)
             print("Well played! Game over.")
             time.sleep(1)
-            break
+            exit()
 
         print("Taylor's turn")
         time.sleep(1)
@@ -535,7 +532,7 @@ def play_russian_roulette():
         if chambers == bullet_chamber:
             print("BANG! Swift sucks!")
             time.sleep(1)
-            break
+            exit()
 
         else:
             print("*Taylor pulls the trigger")
@@ -544,32 +541,31 @@ def play_russian_roulette():
             chambers -= 1
 
 def accept_boss_challenge():
-    if code == code_collected:
-        haaste = input("Are you ready to challenge Taylor 'The Final Boss' Swift ? \nInput yes / no\n")
-        if haaste == "yes":
-            money = "SELECT money FROM inventory WHERE amount = 2000"
-            kursori.execute(money)
-            tulos = kursori.fetchall()
-
-            if tulos:
-                boss_tasolle = input("U seem to be fit to start the final game, are you sure that you want to continue? \nInput yes / no\n")
-                if boss_tasolle == "yes":
-                    play_russian_roulette()
-                elif boss_tasolle == "no":
-                    print("Hahaha you are a bloody coward..")
-                    travel()
-            else:
-                print("U need to have at least '25000' to play with her, you can't play with her")
+    haaste = input("Are you ready to challenge Taylor 'The Final Boss' Swift ? \nInput yes / no\n")
+    if haaste == "yes":
+        if raha > 1999:
+            boss_tasolle = input("U seem to be fit to start the final game, are you sure that you want to continue? \nInput yes / no\n")
+            if boss_tasolle == "yes":
+                play_russian_roulette()
+            elif boss_tasolle == "no":
+                print("Hahaha you are a bloody coward..")
                 travel()
-
-        if haaste == "no":
-            print("What a coward..")
+        else:
+            print("U need to have at least '2000' to play with her, you can't play with her")
             travel()
+    if haaste == "no":
+        print("What a coward..")
+        travel()
 
-def kaikki_funktiot():
-    travel()
-    bum_encounter()
+if code_collected == code:
+    accept_boss_challenge()
 
-beginning()
-while life == 0:
-    kaikki_funktiot()
+def peli():
+    beginning()
+    while life == 0:
+        while bum_count == 0:
+            random.choice(pummit_loppu)
+            travel()
+            while bum_count > 0:
+                bum_encounter()
+peli()
