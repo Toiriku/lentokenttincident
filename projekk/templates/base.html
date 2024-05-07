@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dialog Box</title>
+  <link rel="stylesheet" href="../ppc.css">
+</head>
+<body>
+<h2>Rahaa: {{ raha }}</h2>
+
+  <div class="dialogBox" id="dialogBox">
+    {% for a in content %}
+      <p>{{ a }}</p>
+    {% endfor %}
+  </div>
+
+  <div class="actionBox" id="actionBox">
+
+    <form action="{{ action }}" method="POST">
+      <input type="text" name="raha" value="{{ raha }}" hidden="hidden">
+      {% if condition == True %}
+          <input type="text" name="knife" value="{{ dirk }}" hidden="hidden">
+
+      {% if nappi1 %}
+          <input type="submit" name="teko" value="{{ nappi1 }}">
+      {% endif %}
+      {% if nappi2 %}
+          <input type="submit" name="teko" value="{{ nappi2 }}">
+      {% endif %}
+      {% if nappi3 %}
+          <input type="submit" name="teko" value="{{ nappi3 }}">
+      {% endif %}
+      {% if nappi4 %}
+          <input type="submit" name="teko" value="{{ nappi4 }}">
+      {% endif %}
+    </form>
+  </div>
+</body>
+</html>
