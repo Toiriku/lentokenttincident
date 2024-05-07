@@ -1,6 +1,7 @@
-import os
+"""
+import os, string
+"""
 import random
-import string
 import mysql.connector
 from flask import Flask
 from flask import render_template, request
@@ -18,44 +19,13 @@ app = Flask(__name__)
 
 kursori = yhteys.cursor()
 
-
-bum_count = 0
 bums = ["bum"]
 bum = random.choice(bums)
 
-airport_comment = [
-    "During your exploration, you come upon a passage where a small group of bums can be seen; "
-    "you decide to check it out.",
-    "While navigating around the airport, you discover a hallway with a handful of bums, "
-    "leading you to investigate further.",
-    "As you move about, a corridor with a few bums becomes evident, compelling you to make your way there.",
-    "In your journey, you stumble upon a passage where a few bums are present, prompting you to explore.",
-    "While exploring the surroundings, you find a hallway with a small group of bums, "
-    "and you decide to head in that direction.",
-    "As you wander, a corridor filled with bums in need of a gambling catches your attention, "
-    "urging you to approach.",
-    "During your journey, you encounter a passage where a small group of bums can be observed; "
-    "you decide to investigate.",
-    "While navigating, you chance upon a hallway with a handful of bums, motivating you to explore further.",
-    "As you stroll, a corridor featuring a few bums becomes visible, compelling you to make your way there.",
-    "In your exploration, you happen upon a passage where a few bums are present, prompting you to investigate.",
-    "As you walk around, a corridor occupied by bums in need of gambling captures your attention, "
-    "urging you to approach.",
-    "During your journey, you discover a passage where a small group of bums can be seen; you decide to check it out.",
-    "While navigating around the airport, you notice a hallway with a handful of bums, "
-    "motivating you to explore further.",
-    "As you move about, a corridor with a few bums becomes evident, compelling you to make your way there.",
-    "In your exploration, you stumble upon a passage where a few bums are present, prompting you to explore.",
-    "While exploring the surroundings, you find a hallway with a small group of bums, "
-    "and you decide to head in that direction.",
-    "As you wander, a corridor filled with bums in need of gambling catches your attention, "
-    "urging you to approach.",
-    "During your journey, you encounter a passage where a small group of bums can be observed; "
-    "you decide to investigate."
-]
-
-
-print_airport_comment = random.choice(airport_comment)
+travel_dialogue = ["Where will u go next ?",
+                    "Where are u planning to go now?",
+                    "Where are u planning to go next?",
+                    "Where shall u go now ?"]
 
 class Inventory:
     def __init__(self, raha, dirk):
@@ -186,7 +156,7 @@ def hello_bum_encounter():
     return -1
 
 def play_game(content, inventory):
-    content.append("Arvaa minkä numeron heität")
+    content.append("Arvaa minkä numeron heität 1-6")
     return render_template("base.html", content=content, nappi1="1", nappi2="2", nappi3="3", nappi4="4", nappi5="5", nappi6="6", inventory=inventory.map(), action="play_game")
 
 @app.route("/play_game", methods=["POST"])
@@ -202,7 +172,76 @@ def actual_play_game():
         content.append(f"Tulos oli {nopat}. Hävisit pelin.")
     return travel(content, inventory)
 
-"""""""""
+@app.route("/", methods=["GET"])
+def travel(content=None, inventory=None):
+    if content is None:
+        content = []
+    if inventory is None:
+        inventory = Inventory(1000, 0)
+    kentat = "SELECT name, continent FROM airport ORDER BY RAND() LIMIT 3"
+    kursori.execute(kentat)
+    options = kursori.fetchall()
+    content.append(random.choice(travel_dialogue))
+    content.append("Choose 1: ")
+    print(inventory.raha)
+    return render_template("base.html", content=content, nappi1=options[0], nappi2=options[1], nappi3=options[2], inventory=inventory.map(), action='travel')
+
+@app.route("/travel", methods=["GET", "POST"])
+def actual_travel():
+    valinta = request.form["teko"]
+    valinta = get_name(valinta)
+    content = [f"U are at {valinta}"]
+    inventory = Inventory(request.form["raha"], request.form["dirk"])
+    print("Hello")
+    return bum_encounter(content, inventory)
+
+def get_name(roskaa):
+    return roskaa.split("'")[1]
+def kaikki_funktiot():
+    travel()
+    bum_encounter()
+
+app.run()
+
+
+
+"""
+
+bum_count = 0
+
+airport_comment = [
+    "During your exploration, you come upon a passage where a small group of bums can be seen; "
+    "you decide to check it out.",
+    "While navigating around the airport, you discover a hallway with a handful of bums, "
+    "leading you to investigate further.",
+    "As you move about, a corridor with a few bums becomes evident, compelling you to make your way there.",
+    "In your journey, you stumble upon a passage where a few bums are present, prompting you to explore.",
+    "While exploring the surroundings, you find a hallway with a small group of bums, "
+    "and you decide to head in that direction.",
+    "As you wander, a corridor filled with bums in need of a gambling catches your attention, "
+    "urging you to approach.",
+    "During your journey, you encounter a passage where a small group of bums can be observed; "
+    "you decide to investigate.",
+    "While navigating, you chance upon a hallway with a handful of bums, motivating you to explore further.",
+    "As you stroll, a corridor featuring a few bums becomes visible, compelling you to make your way there.",
+    "In your exploration, you happen upon a passage where a few bums are present, prompting you to investigate.",
+    "As you walk around, a corridor occupied by bums in need of gambling captures your attention, "
+    "urging you to approach.",
+    "During your journey, you discover a passage where a small group of bums can be seen; you decide to check it out.",
+    "While navigating around the airport, you notice a hallway with a handful of bums, "
+    "motivating you to explore further.",
+    "As you move about, a corridor with a few bums becomes evident, compelling you to make your way there.",
+    "In your exploration, you stumble upon a passage where a few bums are present, prompting you to explore.",
+    "While exploring the surroundings, you find a hallway with a small group of bums, "
+    "and you decide to head in that direction.",
+    "As you wander, a corridor filled with bums in need of gambling catches your attention, "
+    "urging you to approach.",
+    "During your journey, you encounter a passage where a small group of bums can be observed; "
+    "you decide to investigate."
+]
+
+print_airport_comment = random.choice(airport_comment)
+
 @app.route("/", methods=["GET", "POST"])
 def purchase_knife(content=None, raha=0, dirk=0):
     if content is None:
@@ -244,7 +283,7 @@ code_dialogues2 = ["U already have that one, damn it ..",
 
 
 codeCreation()
-"""""""""
+
 def request_information():
     global raha
     global dirk
@@ -332,7 +371,7 @@ def request_information():
 
 
 print_airport_comment = random.choice(airport_comment)
-"""
+
 
 
 deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
@@ -457,37 +496,12 @@ def beginning():
     print("Your objective: \nFind Taylor Swifts lair and them "
           "\nvia purchasing information from various bums you encounter on your travels."
           "\nBeat Taylor Swift because she is very bad for the climate. ")
-"""
 
-travel_dialogue = ["Where will u go next ?",
-                    "Where are u planning to go now?",
-                    "Where are u planning to go next?",
-                    "Where shall u go now ?"]
 
-@app.route("/", methods=["GET"])
-def travel(content=None, inventory=None):
-    if content is None:
-        content = []
-    if inventory is None:
-        inventory = Inventory(1000, 0)
-    kentat = "SELECT name, continent FROM airport ORDER BY RAND() LIMIT 3"
-    kursori.execute(kentat)
-    options = kursori.fetchall()
-    content.append(random.choice(travel_dialogue))
-    content.append("Choose 1: ")
-    print(inventory.raha)
-    return render_template("base.html", content=content, nappi1=options[0], nappi2=options[1], nappi3=options[2], inventory=inventory.map(), action='travel')
 
-@app.route("/travel", methods=["GET", "POST"])
-def actual_travel():
-    valinta = request.form["teko"]
-    valinta = get_name(valinta)
-    content = [f"U are at {valinta}"]
-    inventory = Inventory(request.form["raha"], request.form["dirk"])
-    print("Hello")
-    return bum_encounter(content, inventory)
 
-""""
+
+
     while valinta not in (1, 2, 3):
         print("Invalid input ")
         valinta = int(input("Choose 1, 2, or 3 and press Enter to continue.."))
@@ -578,13 +592,4 @@ def accept_boss_challenge():
         if haaste == "no":
             print("What a coward..")
             travel()
-"""""
-
-
-def get_name(roskaa):
-    return roskaa.split("'")[1]
-def kaikki_funktiot():
-    travel()
-    bum_encounter()
-
-app.run()
+"""
