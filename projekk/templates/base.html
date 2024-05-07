@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../ppc.css">
 </head>
 <body>
-<h2>Rahaa: {{ raha }}</h2>
+<h2>Rahaa: {{ inventory.raha }}</h2>
 
   <div class="dialogBox" id="dialogBox">
     {% for a in content %}
@@ -18,9 +18,8 @@
   <div class="actionBox" id="actionBox">
 
     <form action="{{ action }}" method="POST">
-      <input type="text" name="raha" value="{{ raha }}" hidden="hidden">
-      {% if condition == True %}
-          <input type="text" name="knife" value="{{ dirk }}" hidden="hidden">
+      <input type="text" name="dirk" value="{{ inventory.dirk }}" hidden="hidden">
+      <input type="text" name="raha" value="{{ inventory.raha }}" hidden="hidden">
 
       {% if nappi1 %}
           <input type="submit" name="teko" value="{{ nappi1 }}">
@@ -34,6 +33,13 @@
       {% if nappi4 %}
           <input type="submit" name="teko" value="{{ nappi4 }}">
       {% endif %}
+      {% if nappi5 %}
+          <input type="submit" name="teko" value="{{ nappi5 }}">
+      {% endif %}
+      {% if nappi6 %}
+          <input type="submit" name="teko" value="{{ nappi6 }}">
+      {% endif %}
+
     </form>
   </div>
 </body>

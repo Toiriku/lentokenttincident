@@ -1,6 +1,5 @@
 import os
 import random
-import time
 import string
 import mysql.connector
 from flask import Flask
@@ -20,9 +19,6 @@ app = Flask(__name__)
 kursori = yhteys.cursor()
 
 
-raha = 1000
-dirk = 0
-life = 0
 bum_count = 0
 bums = ["bum"]
 bum = random.choice(bums)
@@ -61,11 +57,24 @@ airport_comment = [
 
 print_airport_comment = random.choice(airport_comment)
 
+class Inventory:
+    def __init__(self, raha, dirk):
+        print("hhhhhhhhhhh")
+        self.raha = int(raha)
+        self.dirk = int(dirk)
+        print("sytasd")
 
-def bum_encounter(content=None, raha=0):
+    def map(self):
+        return {"raha":  str(self.raha), "dirk": str(self.dirk)}
+
+def bum_encounter(content=None, inventory=None):
     if content is None:
         content = []
-
+    if inventory is None:
+        inventory = Inventory(0, 0)
+    print("hehe")
+    print(inventory.raha)
+    print("xd")
     dialog_bum_encounter1 = [
         f"You have stumbled upon a wild {bum}.",
         f"A feral figure appears in your path, a {bum}.",
@@ -159,49 +168,57 @@ def bum_encounter(content=None, raha=0):
         "Keep walking. "
     ]
     content.append(f'4. {random.choice(dialog_action4)}')
-    return render_template("base.html", content=content, nappi1="1", nappi2="2", nappi3="3", nappi4="4", raha=raha, action="bum_encounter")
+    return render_template("base.html", content=content, nappi1="1", nappi2="2", nappi3="3", nappi4="4", inventory=inventory.map(), action="bum_encounter")
 
 @app.route("/bum_encounter", methods=["POST"])
 def hello_bum_encounter():
     action = request.form["teko"]
+    inventory = Inventory(request.form["raha"], request.form["dirk"])
     if action == "1":
-        play_game()
+        return play_game([], inventory)
     elif action == "2":
-        purchase_knife()
+        print("Hello world")
     elif action == "3":
-        request_information()
+        print("ok")
     elif action == "4":
         content = ["You continued on your way. "]
-        return travel(content, int(request.form["raha"]))
-    else:
-        print("Invalid input, encounter will now end. Better luck next time.")
+        return travel(content, Inventory(request.form["raha"], request.form["dirk"]))
     return -1
+
+def play_game(content, inventory):
+    content.append("Arvaa minkä numeron heität")
+    return render_template("base.html", content=content, nappi1="1", nappi2="2", nappi3="3", nappi4="4", nappi5="5", nappi6="6", inventory=inventory.map(), action="play_game")
+
+@app.route("/play_game", methods=["POST"])
+def actual_play_game():
+    nopat = random.randint(1, 6)
+    content = ["Heitit nopan"]
+    inventory = Inventory(request.form["raha"], request.form["dirk"])
+    if str(nopat) == request.form["teko"]:
+        inventory.raha += 500
+        content.append("Voitit pelin")
+    else:
+        inventory.raha -= 50
+        content.append(f"Tulos oli {nopat}. Hävisit pelin.")
+    return travel(content, inventory)
+
+"""""""""
+@app.route("/", methods=["GET", "POST"])
+def purchase_knife(content=None, raha=0, dirk=0):
+    if content is None:
+        content = []
+    content.append('Do you wish to purchase a dirk knife?')
+    return render_template("base.html", content=content, nappi1="yes", nappi2="no", raha=raha, action='purchase_knife')
 
 
 @app.route("/purchase_knife", methods=["POST"])
-def purchase_knife():
-    knife_buy = input(f"{bum}: So you wish to purchase a knife huh? \nInput yes / no\n")
-    if knife_buy == 'yes':
-        acquire_a_shank = input(f"{bum}: You can have it for 300. \nInput yes / no\n")
-        if acquire_a_shank == 'yes':
-            print("shank acquired")
-            raha -= 300
-            print(f"{bum}: A favorable deal")
-            print("Bum takes off and disappears to the crowds. ")
-            return
-        elif acquire_a_shank == 'no':
-            print(f"{bum}: Stop bothering me then??")
-            print("Bum takes off and disappears to the crowds. ")
-            return
-        else:
-            print("Invalid input, encounter will now end. Better luck next time.")
-            return
-    elif knife_buy == 'no':
-        print(f"{bum}: Stop bothering me then??")
-        return
-    else:
-        print("Invalid input, encounter will now end. Better luck next time.")
-        return
+def actual_purchase_knife():
+    action = request.form["teko"]
+    if action == "yes":
+        dirk+=1
+    if action == "no":
+        content=['I guess not']
+    return
 
 
 
@@ -227,7 +244,7 @@ code_dialogues2 = ["U already have that one, damn it ..",
 
 
 codeCreation()
-
+"""""""""
 def request_information():
     global raha
     global dirk
@@ -315,11 +332,8 @@ def request_information():
 
 
 print_airport_comment = random.choice(airport_comment)
+"""
 
-@app.route('/play_game', methods=['POST'])
-def play_game():
-    blackjack_game = game()
-    return
 
 deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
 bet = 1
@@ -365,8 +379,8 @@ def print_result(dealer_kasi, player_kasi):
     print("dealer has: ", dealer_kasi, " (total", total(dealer_kasi), ")")
     print("player has: ", player_kasi, " (total", total(player_kasi), ")")
 
-@app.route('/game', methods=['POST'])
-def game():
+@app.route('/play_game', methods=['POST'])
+def play_game():
     global raha, bet, dealer_kasi, player_kasi
     shuffle()
     dealer_kasi = []
@@ -443,7 +457,7 @@ def beginning():
     print("Your objective: \nFind Taylor Swifts lair and them "
           "\nvia purchasing information from various bums you encounter on your travels."
           "\nBeat Taylor Swift because she is very bad for the climate. ")
-
+"""
 
 travel_dialogue = ["Where will u go next ?",
                     "Where are u planning to go now?",
@@ -451,23 +465,27 @@ travel_dialogue = ["Where will u go next ?",
                     "Where shall u go now ?"]
 
 @app.route("/", methods=["GET"])
-def travel(content=None, raha=1000):
+def travel(content=None, inventory=None):
     if content is None:
         content = []
+    if inventory is None:
+        inventory = Inventory(1000, 0)
     kentat = "SELECT name, continent FROM airport ORDER BY RAND() LIMIT 3"
     kursori.execute(kentat)
     options = kursori.fetchall()
     content.append(random.choice(travel_dialogue))
     content.append("Choose 1: ")
-    return render_template("base.html", content=content, nappi1= options[0], nappi2= options[1], nappi3= options[2], raha=raha, action= 'travel')
+    print(inventory.raha)
+    return render_template("base.html", content=content, nappi1=options[0], nappi2=options[1], nappi3=options[2], inventory=inventory.map(), action='travel')
 
 @app.route("/travel", methods=["GET", "POST"])
 def actual_travel():
     valinta = request.form["teko"]
     valinta = get_name(valinta)
-    content= [f"U are at {valinta}"]
+    content = [f"U are at {valinta}"]
+    inventory = Inventory(request.form["raha"], request.form["dirk"])
     print("Hello")
-    return bum_encounter(content, int(request.form["raha"]))
+    return bum_encounter(content, inventory)
 
 """"
     while valinta not in (1, 2, 3):
@@ -485,7 +503,7 @@ def actual_travel():
     while bum_count > 0:
         bum_encounter()
     return
-"""""
+
 
 #boss fight
 def play_russian_roulette():
@@ -560,6 +578,8 @@ def accept_boss_challenge():
         if haaste == "no":
             print("What a coward..")
             travel()
+"""""
+
 
 def get_name(roskaa):
     return roskaa.split("'")[1]
