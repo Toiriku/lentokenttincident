@@ -29,10 +29,8 @@ travel_dialogue = ["Where will u go next ?",
 
 class Inventory:
     def __init__(self, raha, dirk):
-        print("hhhhhhhhhhh")
         self.raha = int(raha)
         self.dirk = int(dirk)
-        print("sytasd")
 
     def map(self):
         return {"raha":  str(self.raha), "dirk": str(self.dirk)}
@@ -42,9 +40,6 @@ def bum_encounter(content=None, inventory=None):
         content = []
     if inventory is None:
         inventory = Inventory(0, 0)
-    print("hehe")
-    print(inventory.raha)
-    print("xd")
     dialog_bum_encounter1 = [
         f"You have stumbled upon a wild {bum}.",
         f"A feral figure appears in your path, a {bum}.",
@@ -147,7 +142,7 @@ def hello_bum_encounter():
     if action == "1":
         return play_game([], inventory)
     elif action == "2":
-        print("Hello world")
+        return purchase_knife([], inventory)
     elif action == "3":
         print("ok")
     elif action == "4":
@@ -171,6 +166,28 @@ def actual_play_game():
         inventory.raha -= 50
         content.append(f"Tulos oli {nopat}. Hävisit pelin.")
     return travel(content, inventory)
+
+
+def purchase_knife(content=None, inventory=None, raha=0, dirk=0):
+    if content is None:
+        content = []
+    if inventory is None:
+        inventory = Inventory(0, 0)
+    content.append('Do you wish to purchase a dirk knife?')
+    return render_template("base.html", content=content, nappi1="yes", nappi2="no", raha=raha, action='purchase_knife')
+
+@app.route("/purchase_knife", methods=["POST"])
+def actual_purchase_knife():
+    action = request.form["teko"]
+    inventory = Inventory(request.form["raha"], request.form["dirk"])
+    content = ["Dirk costs 300"]
+    if action == "yes":
+        inventory.dirk += 1
+        inventory.raha -= 300
+        content = ['You have purchased a knife']
+    if action == "no":
+        content = ['I guess not']
+    return bum_encounter(content, inventory)
 
 @app.route("/", methods=["GET"])
 def travel(content=None, inventory=None):
@@ -197,9 +214,7 @@ def actual_travel():
 
 def get_name(roskaa):
     return roskaa.split("'")[1]
-def kaikki_funktiot():
-    travel()
-    bum_encounter()
+
 
 app.run()
 
@@ -592,4 +607,8 @@ def accept_boss_challenge():
         if haaste == "no":
             print("What a coward..")
             travel()
+            
+def kaikki_funktiot():
+    travel()
+    bum_encounter()
 """
