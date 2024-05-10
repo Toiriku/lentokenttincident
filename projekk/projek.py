@@ -174,17 +174,17 @@ def purchase_knife(content=None, inventory=None, raha=0, dirk=0):
     if inventory is None:
         inventory = Inventory(0, 0)
     content.append('Do you wish to purchase a dirk knife?')
-    return render_template("base.html", content=content, nappi1="yes", nappi2="no", raha=raha, action='purchase_knife')
+    content.append('Dirk costs 300')
+    return render_template("base.html", content=content, nappi1="yes", nappi2="no", inventory=inventory.map(), action='purchase_knife')
 
 @app.route("/purchase_knife", methods=["POST"])
 def actual_purchase_knife():
     action = request.form["teko"]
     inventory = Inventory(request.form["raha"], request.form["dirk"])
-    content = ["Dirk costs 300"]
     if action == "yes":
         inventory.dirk += 1
         inventory.raha -= 300
-        content = ['You have purchased a knife']
+        content = ['You have purchased a dirk knife']
     if action == "no":
         content = ['I guess not']
     return bum_encounter(content, inventory)
@@ -200,7 +200,6 @@ def travel(content=None, inventory=None):
     options = kursori.fetchall()
     content.append(random.choice(travel_dialogue))
     content.append("Choose 1: ")
-    print(inventory.raha)
     return render_template("base.html", content=content, nappi1=options[0], nappi2=options[1], nappi3=options[2], inventory=inventory.map(), action='travel')
 
 @app.route("/travel", methods=["GET", "POST"])
@@ -209,7 +208,6 @@ def actual_travel():
     valinta = get_name(valinta)
     content = [f"U are at {valinta}"]
     inventory = Inventory(request.form["raha"], request.form["dirk"])
-    print("Hello")
     return bum_encounter(content, inventory)
 
 def get_name(roskaa):
