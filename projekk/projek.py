@@ -1,45 +1,226 @@
+"""
+import os, string
+"""
 import random
-
-import time
-
 import mysql.connector
+from flask import Flask
+from flask import render_template, request
 
 yhteys = mysql.connector.connect(
          host='127.0.0.1',
          port= 3306,
          database='demogame',
          user='root',
-         password='ro0t',
+         password='liikeonlääke',
          autocommit=True
 )
 
+app = Flask(__name__)
+
 kursori = yhteys.cursor()
 
-
-#def lentokenttaSiirto():
-   # valinta = [tulos - 1]
-   # kursori.execute("INSERT INTO game (location) VALUES (%s), (%s);", (valinta))
-   # print(f"U start at the airport {valinta}")
-   # print("Have fun)")
-   # return valinta
-
-#startingPoint()
-
-#def arrival():
-   # print("Which one do u want to talk to?")
-   # valinta = input("Type in number (1-3) and press Enter to continue..")
-
-   # if valinta == "1" or valinta == "2" or valinta == "3":
-  #  return
-
-#arrival()
-
-
-raha = 1000
-dirk = 0
-life = 0
 bums = ["bum"]
 bum = random.choice(bums)
+
+travel_dialogue = ["Where will u go next ?",
+                    "Where are u planning to go now?",
+                    "Where are u planning to go next?",
+                    "Where shall u go now ?"]
+
+class Inventory:
+    def __init__(self, raha, dirk):
+        self.raha = int(raha)
+        self.dirk = int(dirk)
+
+    def map(self):
+        return {"raha":  str(self.raha), "dirk": str(self.dirk)}
+
+def bum_encounter(content=None, inventory=None):
+    if content is None:
+        content = []
+    if inventory is None:
+        inventory = Inventory(0, 0)
+    dialog_bum_encounter1 = [
+        f"You have stumbled upon a wild {bum}.",
+        f"A feral figure appears in your path, a {bum}.",
+        f"In your way stands an untamed wanderer, a {bum}.",
+        f"A rogue character emerges before you, a {bum}.",
+        f"You find yourself face to face in the home turf of the {bum}.",
+        f"Your travels are halted, you notice an uncontrolled street dweller, a {bum}.",
+        f"A rogue individual appears in your presence, a {bum}."
+    ]
+    print_bum_encounter1 = random.choice(dialog_bum_encounter1)
+    content.append(print_bum_encounter1)
+
+    dialog_bum_encounter2 = [
+        "Will you engage in a game with the bum, procure a knife from them, or attempt to extract information?",
+        "Are you inclined to partake in a game with the bum, buy a knife, or seek information?",
+        "Will you entertain the possibility of a game with the bum, making a knife purchase, "
+        "or extracting information?",
+        "Are you open to participating in a game with the bum, securing a knife, or obtaining information?",
+        "Would you consider joining a game with the bum, procuring a knife, or attempting to gather information?",
+        "Are you up for engaging in a game with the bum, buying a knife, or seeking information?",
+        "Will you consider playing a game with the bum, purchasing a knife, or extracting information?",
+        "Do you desire to participate in a game with the bum, obtain a knife, or try to gather information?"
+    ]
+    print_bum_encounter2 = random.choice(dialog_bum_encounter2)
+    content.append(print_bum_encounter2)
+
+    dialog_bum_encounter3 = [
+        "Choose your action: ",
+        "Decide what to do: ",
+        "Pick your action: ",
+        "Choose your next step: ",
+        "Decide your course of action: ",
+        "Select an option: ",
+        "Opt for your action: ",
+        "Decide your move: "
+    ]
+    print_bum_encounter3 = random.choice(dialog_bum_encounter3)
+    content.append(print_bum_encounter3)
+
+    dialog_action1 = [
+        "Engage in a game. ",
+        "Engage in a gaming session. ",
+        "Participate in a game. ",
+        "Participate in a gaming session. ",
+        "Take part in a game. ",
+        "Take part in a gaming session. ",
+        "Indulge in some gaming. "
+    ]
+    content.append(f'1. {random.choice(dialog_action1)}')
+    dialog_action2 = [
+        "Proceed with a transaction. ",
+        "Conduct a buying activity. ",
+        "Make a deal. ",
+        "Make a transaction. ",
+        "Commit purchasing activities. ",
+        "Commit a deal. ",
+        "Indulge in some purchasing activities. ",
+        "Indulge in some dealing. "
+        "Initiate a buying process. ",
+        "Initiate a purchase. ",
+        "Initiate in some purchasing activities. ",
+        "Initiate a buying activity. "
+    ]
+    content.append(f'2. {random.choice(dialog_action2)}')
+    dialog_action3 = [
+        "Inquire for details on TheBauss. ",
+        "Inquire for information. ",
+        "Inquire for knowledge. ",
+        "Seek information. ",
+        "Seek insights. ",
+        "Seek knowledge. ",
+        "Ask for insights. ",
+        "Ask for knowledge. ",
+        "Ask for information. ",
+        "Request information. ",
+        "Gather intel. ",
+        "Kindly request information. ",
+        "Pose a query. ",
+        "Solicit information. ",
+        "Probe for details. ",
+        "Request insights. ",
+        "Inquire for knowledge. "
+    ]
+    content.append(f'3. {random.choice(dialog_action3)}')
+    dialog_action4 = [
+        "Continue your journey. ",
+        "Keep moving forward. ",
+        "Proceed on your path. ",
+        "Move along. ",
+        "Walk on. ",
+        "Keep walking. "
+    ]
+    content.append(f'4. {random.choice(dialog_action4)}')
+    return render_template("base.html", content=content, nappi1="1", nappi2="2", nappi3="3", nappi4="4", inventory=inventory.map(), action="bum_encounter")
+
+@app.route("/bum_encounter", methods=["POST"])
+def hello_bum_encounter():
+    action = request.form["teko"]
+    inventory = Inventory(request.form["raha"], request.form["dirk"])
+    if action == "1":
+        return play_game([], inventory)
+    elif action == "2":
+        return purchase_knife([], inventory)
+    elif action == "3":
+        print("ok")
+    elif action == "4":
+        content = ["You continued on your way. "]
+        return travel(content, Inventory(request.form["raha"], request.form["dirk"]))
+    return -1
+
+def play_game(content, inventory):
+    content.append("Arvaa minkä numeron heität 1-6")
+    return render_template("base.html", content=content, nappi1="1", nappi2="2", nappi3="3", nappi4="4", nappi5="5", nappi6="6", inventory=inventory.map(), action="play_game")
+
+@app.route("/play_game", methods=["POST"])
+def actual_play_game():
+    nopat = random.randint(1, 6)
+    content = ["Heitit nopan"]
+    inventory = Inventory(request.form["raha"], request.form["dirk"])
+    if str(nopat) == request.form["teko"]:
+        inventory.raha += 500
+        content.append("Voitit pelin")
+    else:
+        inventory.raha -= 50
+        content.append(f"Tulos oli {nopat}. Hävisit pelin.")
+    return travel(content, inventory)
+
+
+def purchase_knife(content=None, inventory=None, raha=0, dirk=0):
+    if content is None:
+        content = []
+    if inventory is None:
+        inventory = Inventory(0, 0)
+    content.append('Do you wish to purchase a dirk knife?')
+    content.append('Dirk costs 300')
+    return render_template("base.html", content=content, nappi1="yes", nappi2="no", inventory=inventory.map(), action='purchase_knife')
+
+@app.route("/purchase_knife", methods=["POST"])
+def actual_purchase_knife():
+    action = request.form["teko"]
+    inventory = Inventory(request.form["raha"], request.form["dirk"])
+    if action == "yes":
+        inventory.dirk += 1
+        inventory.raha -= 300
+        content = ['You have purchased a dirk knife']
+    if action == "no":
+        content = ['I guess not']
+    return bum_encounter(content, inventory)
+
+@app.route("/", methods=["GET"])
+def travel(content=None, inventory=None):
+    if content is None:
+        content = []
+    if inventory is None:
+        inventory = Inventory(1000, 0)
+    kentat = "SELECT name, continent FROM airport ORDER BY RAND() LIMIT 3"
+    kursori.execute(kentat)
+    options = kursori.fetchall()
+    content.append(random.choice(travel_dialogue))
+    content.append("Choose 1: ")
+    return render_template("base.html", content=content, nappi1=options[0], nappi2=options[1], nappi3=options[2], inventory=inventory.map(), action='travel')
+
+@app.route("/travel", methods=["GET", "POST"])
+def actual_travel():
+    valinta = request.form["teko"]
+    valinta = get_name(valinta)
+    content = [f"U are at {valinta}"]
+    inventory = Inventory(request.form["raha"], request.form["dirk"])
+    return bum_encounter(content, inventory)
+
+def get_name(roskaa):
+    return roskaa.split("'")[1]
+
+
+app.run()
+
+
+
+"""
+
+bum_count = 0
 
 airport_comment = [
     "During your exploration, you come upon a passage where a small group of bums can be seen; "
@@ -72,177 +253,51 @@ airport_comment = [
     "you decide to investigate."
 ]
 
-
 print_airport_comment = random.choice(airport_comment)
 
-def random_airport():
-    airports = [
-        "Helsinkivantaa", "Rio de Janeiro"
-    ]
-    return random.choice(airports)
-
-def bum_encounter(bum_count):
-    global raha
-    global dirk
-    global life
-
-    time.sleep(3)
-    dialog_bum_encounter1 = [
-        f"You have stumbled upon a wild {bum}.",
-        f"A feral figure appears in your path, a {bum}.",
-        f"In your way stands an untamed wanderer, a {bum}.",
-        f"A rogue character emerges before you, a {bum}.",
-        f"You find yourself face to face in the home turf of the {bum}.",
-        f"Your travels are halted, you notice an uncontrolled street dweller, a {bum}.",
-        f"A rogue individual appears in your presence, a {bum}."
-    ]
-    print_bum_encounter1 = random.choice(dialog_bum_encounter1)
-    print(print_bum_encounter1)
-
-    time.sleep(2)
-    dialog_bum_encounter2 = [
-        "Will you engage in a game with the bum, procure a knife from them, or attempt to extract information?",
-        "Are you inclined to partake in a game with the bum, buy a knife, or seek information?",
-        "Will you entertain the possibility of a game with the bum, making a knife purchase, "
-        "or extracting information?",
-        "Are you open to participating in a game with the bum, securing a knife, or obtaining information?",
-        "Would you consider joining a game with the bum, procuring a knife, or attempting to gather information?",
-        "Are you up for engaging in a game with the bum, buying a knife, or seeking information?",
-        "Will you consider playing a game with the bum, purchasing a knife, or extracting information?",
-        "Do you desire to participate in a game with the bum, obtain a knife, or try to gather information?"
-    ]
-    print_bum_encounter2 = random.choice(dialog_bum_encounter2)
-    print(print_bum_encounter2)
-
-    time.sleep(2)
-    dialog_bum_encounter3 = [
-        "Choose your action: ",
-        "Decide what to do: ",
-        "Pick your action: ",
-        "Choose your next step: ",
-        "Decide your course of action: ",
-        "Select an option: ",
-        "Opt for your action: ",
-        "Decide your move: "
-        ]
-    print_bum_encounter3 = random.choice(dialog_bum_encounter3)
-    print(print_bum_encounter3)
-
-    dialog_action1 = [
-        "Engage in a game. ",
-        "Engage in a gaming session. ",
-        "Participate in a game. ",
-        "Participate in a gaming session. ",
-        "Take part in a game. ",
-        "Take part in a gaming session. ",
-        "Indulge in some gaming. "
-    ]
-    print_action1 = random.choice(dialog_action1)
-    dialog_action2 = [
-        "Proceed with a transaction. ",
-        "Conduct a buying activity. ",
-        "Make a deal. ",
-        "Make a transaction. ",
-        "Commit purchasing activities. ",
-        "Commit a deal. ",
-        "Indulge in some purchasing activities. ",
-        "Indulge in some dealing. "
-        "Initiate a buying process. ",
-        "Initiate a purchase. ",
-        "Initiate in some purchasing activities. ",
-        "Initiate a buying activity. "
-    ]
-    print_action2 = random.choice(dialog_action2)
-    dialog_action3 = [
-        "Inquire for details on TheBauss. ",
-        "Inquire for information. ",
-        "Inquire for knowledge. ",
-        "Seek information. ",
-        "Seek insights. ",
-        "Seek knowledge. ",
-        "Ask for insights. ",
-        "Ask for knowledge. ",
-        "Ask for information. ",
-        "Request information. ",
-        "Gather intel. ",
-        "Kindly request information. ",
-        "Pose a query. ",
-        "Solicit information. ",
-        "Probe for details. ",
-        "Request insights. ",
-        "Inquire for knowledge. "
-    ]
-    print_action3 = random.choice(dialog_action3)
-    dialog_action4 = [
-        "Continue your journey. ",
-        "Keep moving forward. ",
-        "Proceed on your path. ",
-        "Move along. ",
-        "Walk on. ",
-        "Keep walking. "
-    ]
-    print_action4 = random.choice(dialog_action4)
-    action = input("\n1. " + print_action1 +
-                   "\n2. " + print_action2 +
-                   "\n3. " + print_action3 +
-                   "\n4. " + print_action4 + "\n")
-
-    if action == "1":
-        play_game(bum_count)
-    elif action == "2":
-        purchase_knife(bum_count)
-    elif action == "3":
-        request_information(bum_count)
-    elif action == "4":
-        print("You continued on your way. ")
-        bum_count -= 1
-        return bum_count
-    else:
-        print("Invalid input, encounter will now end. Better luck next time.")
-    bum_count -= 1
-    return bum_count
+@app.route("/", methods=["GET", "POST"])
+def purchase_knife(content=None, raha=0, dirk=0):
+    if content is None:
+        content = []
+    content.append('Do you wish to purchase a dirk knife?')
+    return render_template("base.html", content=content, nappi1="yes", nappi2="no", raha=raha, action='purchase_knife')
 
 
-def purchase_knife(bum_count):
-    global raha
-    global dirk
-    global bum
-
-    knife_buy = input(f"{bum}: So you wish to purchase a knife huh? \nInput yes / no\n")
-    if knife_buy == 'yes':
-        acquire_a_shank = input(f"{bum}: You can have it for 300. \nInput yes / no\n")
-        if acquire_a_shank == 'yes':
-            print("shank acquired")
-            raha -= 300
-            dirk = 1
-            time.sleep(1)
-            print(f"{bum}: A favorable deal")
-            time.sleep(1)
-            print("Bum takes off and disappears to the crowds. ")
-            time.sleep(2)
-            return bum_count
-        elif acquire_a_shank == 'no':
-            print(f"{bum}: Stop bothering me then??")
-            time.sleep(1)
-            print("Bum takes off and disappears to the crowds. ")
-            time.sleep(2)
-            bum_count -= 1
-            return bum_count
-        else:
-            print("Invalid input, encounter will now end. Better luck next time.")
-            bum_count -= 1
-            return bum_count
-    elif knife_buy == 'no':
-        print(f"{bum}: Stop bothering me then??")
-        bum_count -= 1
-        return bum_count
-    else:
-        print("Invalid input, encounter will now end. Better luck next time.")
-        bum_count -= 1
-        return bum_count
+@app.route("/purchase_knife", methods=["POST"])
+def actual_purchase_knife():
+    action = request.form["teko"]
+    if action == "yes":
+        dirk+=1
+    if action == "no":
+        content=['I guess not']
+    return
 
 
-def request_information(bum_count):
+
+def codeCreation():
+    global code_collected
+    global code
+    code_collected = []
+    characters = string.ascii_letters + string.digits
+    code = ''.join(random.choices(characters, k=6))
+    return code
+
+code_dialogues1 = ["You got piece of code you needed",
+                   "You are one step closer to that devil..",
+                   "That is exactly what you needed",
+                   "That clue will help u get to the boss..",
+                   ]
+
+code_dialogues2 = ["U already have that one, damn it ..",
+                   "Not the one u needed.."
+                   "Bum sold u some crap, u got scammed"
+                   "That piece of paper has nothing to do with the boss, better luck next time!"]
+
+
+
+codeCreation()
+
+def request_information():
     global raha
     global dirk
     global life
@@ -300,346 +355,182 @@ def request_information(bum_count):
     elif inforequest_outcome == 2:
         print(f"{bum}: I am no snitch. ")
         print(f"{bum} walks away. ")
-        bum_count -= 1
-        return bum_count
+        return
+
     else:
-        info_buy = input(f"{bum}: I can sell you a clue for 100. \nInput yes / no\n")
+        info_buy = input(f"{bum}: I can sell you a clue for 500. \nInput yes / no\n")
         if info_buy == 'yes':
-            raha -= 100
-            print("clue")
+            raha -= 500
+            clue = random.choice(code)
+            print("Bum pulls out piece of paper with something written on it ")
+            print("He quickly hands you the paper and disappears while you are carefully unfolding it ")
+            print(f"'{clue}' is written on the paper")
+            if clue not in code_collected:
+                print(random.choice(code_dialogues1))
+                code_collected.append(clue)
+            elif code_collected == code:
+                print("Seems like you finally have everything u needed to get to her..")
+            else:
+                print(random.choice(code_dialogues2))
+
         elif info_buy == 'no':
             print(f"{bum}: Stop bothering me then??")
             time.sleep(1)
             print(f"{bum} takes off and disappears to the crowds. ")
-            bum_count -= 1
-            return bum_count
+            return
         else:
             print("Invalid input, encounter will now end. Better luck next time. ")
-            bum_count -= 1
-            return bum_count
+            return
 
-
-def beginning():
-    print("Game ✧ Start")
-    print("Your objective: \nFind TheBausses lair and them "
-          "\nvia purchasing information from various bums you encounter on your travels."
-          "\nBeat TheBauss because they are very bad for the climate. ")
-
-
-def airport_visit():
-    print(f"You start from {random_airport()} the airport."
-          "\nThere are a lot of people here. ")
-    time.sleep(1)
-    print(print_airport_comment)
-
-    bum_count = int(random.randint(3, 5))
-    while bum_count > 0:
-        bum_count = bum_encounter(bum_count)
-
-
-def airport_arrive():
-    print(f"You arrive to {random_airport()} the airport."
-          "\nThere are a lot of people here. ")
-    time.sleep(1)
-    print(print_airport_comment)
-
-    bum_count = int(random.randint(3, 5))
-    while bum_count > 0:
-        bum_count = bum_encounter(bum_count)
-
-
-airport_visit()
 
 print_airport_comment = random.choice(airport_comment)
 
 
-print("Time to play the game")
-print("Press Enter to continue..")
 
-player_name = input("Enter your name: ")
+deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
+bet = 1
 
-user_input = input()
-if user_input == "":
-    print("Choose your starting point")
+def shuffle():
+    random.shuffle(deck)
 
-kursori.execute("SELECT airport.name, iso_country FROM airport ORDER BY RAND() LIMIT 3")
-tulos = (kursori.fetchall())
+def nosto():
+    kortti = deck.pop(0)
+    if kortti == 11:
+        kortti = "J"
+    elif kortti == 12:
+        kortti = "Q"
+    elif kortti == 13:
+        kortti = "K"
+    elif kortti == 14:
+        kortti = "A"
+    return kortti
 
 
-for x in tulos:
-    index = tulos.index(x)
-    print(f"{index + 1}. {x}")
+def total(kasi):
+    total_value = 0
+    num_aces = 0
+    for kortti in kasi:
+        if isinstance(kortti, int):
+            total_value += kortti
+            if kortti == 11:
+                num_aces += 1
+        elif kortti == "J" or kortti == "Q" or kortti == "K":
+            total_value += 10
+        elif kortti == "A":
+            num_aces += 1
+            total_value += 11
+
+    while total_value > 21 and num_aces > 0:
+        total_value -= 10
+        num_aces -= 1
+    return total_value
 
 
-def play_game(bum_count):
-    print("mustajaakko ei löytyny")
-    # laitetaan tähän mustajaakko
-    bum_count -= 1
-    return bum_count
-    deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
-    bet = 1
+def print_result(dealer_kasi, player_kasi):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("dealer has: ", dealer_kasi, " (total", total(dealer_kasi), ")")
+    print("player has: ", player_kasi, " (total", total(player_kasi), ")")
 
-    def jako(deck):
-        kasi = []
-        for i in range(2):
-            random.shuffle(deck)
-            kortti = random.choice(deck)
-            if kortti == 11: kortti = "J"
-            if kortti == 12: kortti = "Q"
-            if kortti == 13: kortti = "K"
-            if kortti == 14: kortti = "A"
-            kasi.append(kortti)
-        return kasi
+@app.route('/play_game', methods=['POST'])
+def play_game():
+    global raha, bet, dealer_kasi, player_kasi
+    shuffle()
+    dealer_kasi = []
+    player_kasi = []
+    print("Its time to play Blackjack")
+    make_bet()
+    dealer_kasi.append(nosto())
+    player_kasi.append(nosto())
+    player_kasi.append(nosto())
+    print_result(dealer_kasi, player_kasi)
 
-    def total(kasi):
-        total = 0
-        for kortti in kasi:
-            if kortti == "J" or kortti == "Q" or kortti == "K":
-                total += 10
-            elif kortti == "A":
-                if total >= 11:
-                    total += 1
-                else:
-                    total += 11
-            else:
-                total += int(kortti)  # Convert the card string to an integer
-        return total
-
-    def play_again():
-        again = input("Do you want to play again Y/N?").lower()
-        if again == "y":
-            dealer_kasi = []
-            player_kasi = []
-            deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
-            game()
-        else:
-            print("Thanks for playing!")
-            exit()
-
-    def hit():
-        kortti = deck.pop()
-        if kortti == 11:
-            kortti = "J"
-        if kortti == 12:
-            kortti = "Q"
-        if kortti == 13:
-            kortti = "K"
-        if kortti == 14:
-            kortti = "A"
-        kasi.append(kortti)
-        return kasi
-
-    def print_result(dealer_kasi, player_kasi):
-        clear()
-
-        print("Time to play blackjack")
-        print("Dealer has a " + str(dealer_kasi) + "for a total of " + str(total(dealer_kasi)))
-        print("Player has a" + str(player_kasi) + "for a total of " + str(total(player_kasi)))
-
-    def blackjack(dealer_kasi, player_kasi):
-        if total(player_kasi) == 21:
-            print_result(player_kasi, dealer_kasi)
-            print("You got a blackjack!")
-        elif total(dealer_kasi) == 21:
+    while True:
+        choice = input("Would you like to [H]it or [S]tand").lower()
+        if choice == 'h':
+            player_kasi.append(nosto())
             print_result(dealer_kasi, player_kasi)
-            print("The dealer has a blackjack")
-            raha -= bet
-
-    def score(dealer_kasi, player_kasi):
-        if total(player_kasi) == 21:
-            print_result(dealer_kasi, player_kasi)
-            print("You got a blackjack!")
-        elif total(dealer_kasi) == 21:
-            print_result(dealer_kasi, player_kasi)
-            print("The dealer has a blackjack")
-        elif total(player_kasi) > 21:
-            print_result(dealer_kasi, player_kasi)
-            print("You bust")
-        elif total(dealer_kasi) > 21:
-            print_result(dealer_kasi, player_kasi)
-            print("The dealer busts")
-            raha += bet * 1.5
-        elif total(player_kasi) < total(dealer_kasi):
-            print_result(dealer_kasi, player_kasi)
-            print("The dealer has a higher score")
-            raha -= bet
-        elif total(player_kasi) > total(dealer_kasi):
-            print_result(dealer_kasi, player_kasi)
-            print("You have a higher score")
-            raha += bet * 1.5
-        elif total(player_kasi) == total(dealer_kasi):
-            print_result(dealer_kasi, player_kasi)
-            print("It's a tie")
-            raha -= bet
-
-    def make_bet():
-        global bet
-        bet = 0
-        print("How much would you like to bet")
-        while bet == 0:
-            bet_comp = input()
-            bet_comp = int(bet_comp)
-
-            if bet_comp >= 1 and bet_comp <= raha:
-                bet = bet_comp
-            else:
-                print("You only have " + str(raha))
-
-    def game():
-        choice = 0
-        print("Time to game")
-        dealer_kasi = jako(deck)
-        player_kasi = jako(deck)
-        print("dealer has " + str(dealer_kasi[0]))
-        make_bet()
-        print("You have a " + str(player_kasi[0]))
-        blackjack(dealer_kasi, player_kasi)
-        quit = False
-        while not quit:
-            choice = input("Do you want to [H]it, [S]tand or [Q]uit").lower()
-            if choice == 'h':
-                hit(player_kasi)
-                if total(player_kasi) > 21:
-                    print("You bust")
-                    raha -= bet
-                    play_again()
-                elif choice == 's':
-                    while total(dealer_kasi) < 17:
-                        hit(dealer_kasi)
-                        print(dealer_kasi)
-                        if total(dealer_kasi) > 21:
-                            print("Dealer busts")
-                            raha += bet * 1.5
-                            play_again()
-                        score(dealer_kasi, player_kasi)
-                        play_again()
-                elif choice == 'q':
-                    print("Thanks for the game")
-                    quit = True
-                    exit()
+            if total(player_kasi) > 21:
+                print("You bust")
+                print(f"You only have {raha} amount of money lol")
+                break
+        elif choice == 's':
+            while total(dealer_kasi) < 17:
+                dealer_kasi.append(nosto())
+                print("Dealer hits: ", dealer_kasi)
+            score(dealer_kasi, player_kasi)
+            break
+    kaikki_funktiot()
 
 
-def purchase_knife(bum_count):
+def score(dealer_kasi, player_kasi):
     global raha
-    global dirk
-    global bum
-
-    knife_buy = input(f"{bum}: So you wish to purchase a knife huh? \nInput yes / no\n")
-    if knife_buy == 'yes':
-        acquire_a_shank = input(f"{bum}: You can have it for 300. \nInput yes / no\n")
-        if acquire_a_shank == 'yes':
-            print("shank acquired")
-            raha -= 300
-            dirk = 1
-            time.sleep(1)
-            print(f"{bum}: A favorable deal")
-            time.sleep(1)
-            print("Bum takes off and disappears to the crowds. ")
-            time.sleep(2)
-            return bum_count
-        elif acquire_a_shank == 'no':
-            print(f"{bum}: Stop bothering me then??")
-            time.sleep(1)
-            print("Bum takes off and disappears to the crowds. ")
-            time.sleep(2)
-            bum_count -= 1
-            return bum_count
-        else:
-            print("Invalid input, encounter will now end. Better luck next time.")
-            bum_count -= 1
-            return bum_count
-    elif knife_buy == 'no':
-        print(f"{bum}: Stop bothering me then??")
-        bum_count -= 1
-        return bum_count
+    dealer_total = total(dealer_kasi)
+    player_total = total(player_kasi)
+    if player_total == 21:
+        raha += bet * 2.5
+        print(f"Your total is: {raha}")
+    if player_total > 21:
+        print("You bust! Dealer wins.")
+    elif dealer_total > 21:
+        print("Dealer busts! You win.")
+        raha += bet * 2.5
+    elif player_total > dealer_total:
+        print("You win!")
+        raha += bet * 2.5
+    elif player_total < dealer_total:
+        print("Dealer wins.")
     else:
-        print("Invalid input, encounter will now end. Better luck next time.")
-        bum_count -= 1
-        return bum_count
+        print("It's a tie.")
+        raha += bet
+    print("Your remaining money:", raha)
+    bum_encounter()
 
-def request_information(bum_count):
-    global raha
-    global dirk
-    global life
-
-    inforequest = [1, 2, 3, 4]
-    inforequest_outcome = random.choice(inforequest)
-
-    if inforequest_outcome == 1:
-        print("The less fortunate individual extends an invitation, "
-              "challenging you to engage in a refined fencing duel. ")
-        time.sleep(3)
-        if dirk == 1:
-            print("You pull your knife out.")
-            time.sleep(1)
-            print("The bum notices the knife and decides to exit the fencing duel by running away.")
-            time.sleep(2)
-        else:
-            print("The call to join was not voluntary and the bum charges towards you")
-            time.sleep(2)
-            time.sleep(1)
-            bumcharge_outcome = random.randint(1, 3)
-            if bumcharge_outcome == 1:
-                print("With agile finesse, you skillfully evaded the oncoming advance of the bum, "
-                      "escaping their charge, and gracefully exited the scene, "
-                      "leaving the duel behind")
-                time.sleep(4)
+@app.route('/make_bet', methods=['POST'])
+def make_bet():
+    global bet, raha
+    print("You have", raha)
+    while True:
+        bet_amount = input("How much would you like to bet? ")
+        if bet_amount.isdigit():
+            bet_amount = int(bet_amount)
+            if bet_amount <= raha:
+                bet = bet_amount
+                raha -= bet
+                break
             else:
-                dialog_death = [
-                    "After an agile maneuver, the bum successfully struck, leaving me wounded and bleeding.",
-                    "A quick and nimble move from the bum resulted in a successful hit, leaving you wounded.",
-                    "Executing a swift and nimble move, the bum landed a successful strike, leaving you injured.",
-                    "The bum executed a swift maneuver, landing a successful hit that left you wounded.",
-                    "A nimble move from the bum resulted in a successful strike, leaving you injured and bleeding.",
-                    "Executing a swift maneuver, the homeless bum landed a hit, leaving you wounded and bleeding.",
-                    "A speedy move from the bum resulted in a successful strike, leaving you injured and bleeding.",
-                    "A nimble maneuver from the homeless bum resulted in a successful hit, leaving you wounded.",
-                    "With a quick move, the bum executed a hit, causing you to be injured and bleeding.",
-                    "A rapid maneuver from the bum led to a successful strike, leaving you wounded and bleeding.",
-                    "Following a swift move by the bum, a precise strike ensued, resulting in you being injured.",
-                    "After a quick maneuver by the bum, they executed a hit, causing you to be wounded.",
-                    "After a nimble maneuver by the bum, they executed a hit, leaving you wounded and bleeding.",
-                    "Following a rapid maneuver by the bum, a successful hit ensued, resulting in you being wounded.",
-                    "Executing a speedy move, the bum landed a hit, resulting in you being injured and bleeding.",
-                    "In the wake of a swift move by the homeless bum, they struck, leaving you injured and bleeding.",
-                    "In the aftermath of a rapid move by the homeless bum, they struck, causing you to be injured.",
-                    "In the wake of a quick maneuver by the bum, they struck, causing you to be wounded and bleeding.",
-                    "In the aftermath of a nimble maneuver by the homeless bum, they struck, leaving you wounded and.",
-                    "In the wake of a nimble move by the homeless bum, they struck, causing you to be bleeding."
-                ]
-                print_death = random.choice(dialog_death)
-                print(print_death)
-                time.sleep(4)
-                print("You Died. ")
-                life = 1
-
-    elif inforequest_outcome == 2:
-        print(f"{bum}: I am no snitch. ")
-        print(f"{bum} walks away. ")
-        bum_count -= 1
-        return bum_count
-
-    else:
-        info_buy = input(f"{bum}: I can sell you a clue for 100. \nInput yes / no\n")
-        if info_buy == 'yes':
-            raha -= 100
-            print("clue")
-        elif info_buy == 'no':
-            print(f"{bum}: Stop bothering me then??")
-            time.sleep(1)
-            print(f"{bum} takes off and disappears to the crowds. ")
-            bum_count -= 1
-            return bum_count
+                print("You don't have enough money!")
         else:
-            print("Invalid input, encounter will now end. Better luck next time. ")
-            bum_count -= 1
-            return bum_count
+            print("Please enter a valid bet amount.")
+
 
 def beginning():
     print("Game ✧ Start")
+
     print("Your objective: \nFind Taylor Swifts lair and them "
           "\nvia purchasing information from various bums you encounter on your travels."
-          "\nBeat Taylor Swift because they are very bad for the climate. ")
+          "\nBeat Taylor Swift because she is very bad for the climate. ")
+
+
+
+
+
+
+    while valinta not in (1, 2, 3):
+        print("Invalid input ")
+        valinta = int(input("Choose 1, 2, or 3 and press Enter to continue.."))
+    else:
+        selected_location = options[valinta - 1][0]
+        kursori.execute("UPDATE game SET location = %s", (selected_location,))
+        kursori.execute("SELECT location FROM game")
+        sijainti = kursori.fetchone()
+        print(f"U are at {sijainti[0]}")
+
+    kursori.fetchall()
+
+    while bum_count > 0:
+        bum_encounter()
+    return
+
 
 #boss fight
 def play_russian_roulette():
@@ -692,4 +583,30 @@ def play_russian_roulette():
             print("Click! Taylor lives that one. :( ")
             chambers -= 1
 
-beginning()
+def accept_boss_challenge():
+    if code == code_collected:
+        haaste = input("Are you ready to challenge Taylor 'The Final Boss' Swift ? \nInput yes / no\n")
+        if haaste == "yes":
+            money = "SELECT money FROM inventory WHERE amount = 2000"
+            kursori.execute(money)
+            tulos = kursori.fetchall()
+
+            if tulos:
+                boss_tasolle = input("U seem to be fit to start the final game, are you sure that you want to continue? \nInput yes / no\n")
+                if boss_tasolle == "yes":
+                    play_russian_roulette()
+                elif boss_tasolle == "no":
+                    print("Hahaha you are a bloody coward..")
+                    travel()
+            else:
+                print("U need to have at least '25000' to play with her, you can't play with her")
+                travel()
+
+        if haaste == "no":
+            print("What a coward..")
+            travel()
+            
+def kaikki_funktiot():
+    travel()
+    bum_encounter()
+"""

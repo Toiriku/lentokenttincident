@@ -1,0 +1,67 @@
+body {
+    background-color: cornsilk;
+    font-family: math;
+    display: flex;
+    justify-content: center;
+}
+
+.monni {
+    width: 10rem;
+}
+
+.dirk {
+    font-size: small;
+    width: 20rem;
+    overflow: scroll;
+}
+
+h2 {
+    display: flex;
+    justify-content: center;
+    width: 8rem;
+    height: 4rem;
+    padding: 1rem 1rem 1rem 1rem;
+    border: 1px solid #000;
+}
+
+.topp {
+    display: flex;
+    align-items: center;
+    background-color: honeydew;
+    border: 1px solid #000;
+    height: 6rem;
+    width: 31rem;
+    top: 1rem;
+}
+.midd {
+    position: absolute;
+    background-color: lavender;
+    border: 1px solid #000;
+    height: 20rem;
+    width: 30rem;
+    overflow: scroll;
+    padding: 0 0 0 1rem;
+    top: 6rem;
+}
+
+.loww {
+    position: absolute;
+    background-color: lavenderblush;
+    border: 1px solid #000;
+    height: 3rem;
+    width: 29rem;
+    overflow: scroll;
+    padding: 1rem 1rem 1rem 1rem;
+    top: 26rem;
+    display: flex;
+    justify-content: center;
+}
+
+.dialogBox {
+    padding: 1rem;
+    font-size: 16px;
+    background-color: beige;
+    overflow-y: scroll;
+    height: 100%;
+}
+
